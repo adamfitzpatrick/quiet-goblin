@@ -1,0 +1,30 @@
+{
+  "name": "quiet-goblin",
+  "version": "0.1.0",
+  "description": "Backend implementation for raging-goblin",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adamfitzpatrick/quiet-goblin.git"
+  },
+  "author": "Adam Fitzpatrick",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adamfitzpatrick/quiet-goblin/issues"
+  },
+  "homepage": "https://github.com/adamfitzpatrick/quiet-goblin#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "file-stream-rotator": "0.0.7",
+    "mongodb": "^2.2.9",
+    "mongoose": "^4.6.0",
+    "morgan": "^1.7.0",
+    "ncp": "^2.0.0",
+    "yargs": "^5.0.0"
+  }
+}
