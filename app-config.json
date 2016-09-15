@@ -1,14 +1,16 @@
 {
   "dev": {
+    "port": 7002,
     "log_format": "dev",
     "log_directory": "./logs",
     "static_source": "./public",
     "mongo_address": "127.0.0.1:27017/ragingGoblin"
   },
   "prod": {
+    "port": 80,
     "log_format": "combined",
-    "log_directory": "./logs",
-    "static_source": "./public",
-    "mongo_address": "127.0.0.1:27017/ragingGoblin"
+    "log_directory": "/logs",
+    "static_source": "/public",
+    "mongo_address": "mongo/ragingGoblin"
   }
 }

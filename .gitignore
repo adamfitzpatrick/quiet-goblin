@@ -4,3 +4,7 @@ build
 **/npm-debug.log
 .idea
 logs
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
