@@ -3,7 +3,7 @@
 let mongoose = require("mongoose");
 let Post = mongoose.model("Post");
 
-module.exports = (router)  => {
+module.exports = (router) => {
     router.get('/posts', (req, res, next) => {
         Post.find((err, posts) => {
             if (err) { return next(err); }

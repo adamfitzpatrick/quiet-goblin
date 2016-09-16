@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"lighthouse.lesson"},{"v":1,"key":{"userId":1,"lessonId":1,"revision":1},"name":"userId_1_lessonId_1_revision_1","ns":"lighthouse.lesson"}]}

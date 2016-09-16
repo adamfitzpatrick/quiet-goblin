@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"lighthouse.actionplan"},{"v":1,"key":{"profileId":1},"name":"profileId_1","ns":"lighthouse.actionplan","background":true},{"v":1,"key":{"actionId":1},"name":"actionId_1","ns":"lighthouse.actionplan","background":true}]}

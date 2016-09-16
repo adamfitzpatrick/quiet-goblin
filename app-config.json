@@ -12,5 +12,12 @@
     "log_directory": "/logs",
     "static_source": "/public",
     "mongo_address": "mongo/ragingGoblin"
+  },
+  "e2e": {
+    "port": 7003,
+    "log_format": "dev",
+    "log_directory": "./e2e-tests/logs",
+    "static_source": "./public",
+    "mongo_address": "127.0.0.1:27017/ragingGoblinTest"
   }
 }

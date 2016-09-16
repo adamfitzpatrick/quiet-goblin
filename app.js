@@ -5,9 +5,6 @@ let bodyParser = require("body-parser");
 let getAppParams = require("./configuration/get-app-config");
 let port = getAppParams("port");
 
-// Data setup
-require("./configuration/data-config")();
-
 // Mongoose configuration
 require("./configuration/mongoose-config")();
 
@@ -15,9 +12,11 @@ require("./configuration/mongoose-config")();
 let app = express();
 app.use(bodyParser.json());
 //app.use(express.static(getAppParams("static_source")));
+
 require("./configuration/logging-config")(app);
 
 // Routing configuration
+require("./routes/health-routes")(app);
 require("./routes/post-routes")(app);
 
 // Start server

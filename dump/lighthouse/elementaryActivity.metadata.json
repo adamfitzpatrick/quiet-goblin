@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"lighthouse.elementaryActivity"},{"v":1,"key":{"actionType":1,"sessionId":1,"groupId":1},"name":"actionType_1_sessionId_1_groupId_1","ns":"lighthouse.elementaryActivity"}]}

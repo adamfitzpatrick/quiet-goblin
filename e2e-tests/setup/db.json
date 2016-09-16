@@ -1,0 +1,30 @@
+{
+  "posts": [{
+    "_id": "57dbacc53250166224c0fce0",
+    "date" : "2016-09-03T04:53:28.124Z",
+    "featured" : true,
+    "tags" : [ "Tag 1", "Tag 2" ],
+    "title" : "Test Driven Development",
+    "description" : "or: How I Learned to Stop Worrying and Love Test Failures",
+    "cover" : "http://localhost:7002/images/dead-cat-tdd-post.png",
+    "height" : 1501
+  }, {
+    "_id": "57dbacc53250166224c0fcdf",
+    "date" : "2016-09-01T12:45:00.000Z",
+    "featured" : false,
+    "tags" : [ "Tag 2", "Tag 3" ],
+    "title" : "Post 2",
+    "description" : "Another test post",
+    "cover" : "some-image",
+    "height" : 500
+  }],
+  "comments": [{
+    "_id": "57dbacc53250166224c0fcd1",
+    "name": "Commenter One",
+    "comment": "Test comment 1"
+  }, {
+    "_id": "57dbacc53250166224c0fcd2",
+    "name": "Commenter Two",
+    "comment": "Test comment 2"
+  }]
+}
