@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+kill $(ps -o pid,command | grep -e 'node app.js --env e2e' | grep -v grep | awk '{print $1}') 2>/dev/null
 npm start -- --env e2e &> /dev/null &
 
 READY=1
@@ -11,6 +12,7 @@ while [ $READY -ne 0 ]; do
 done
 
 cd e2e-tests
+
 for i in "$@"; do
     if [[ $i -eq "w" ]]; then
         WATCH=true
