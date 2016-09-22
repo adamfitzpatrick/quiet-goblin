@@ -8,7 +8,8 @@
     "e2e-tdd": "./e2e/run-e2e-tests.sh -w",
     "start": "node src/app.js",
     "tdd": "istanbul cover --root ./src --include-all-sources -x **/*.spec.js _mocha $(find src -name '*.spec.js') -- -w -R nyan",
-    "test": "istanbul cover _mocha $(find src -name '*.spec.js') -- -R nyan"
+    "test": "istanbul cover _mocha $(find src -name '*.spec.js') -- -R nyan",
+    "ci": "npm test"
   },
   "repository": {
     "type": "git",
