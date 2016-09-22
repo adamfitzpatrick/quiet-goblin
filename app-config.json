@@ -1,23 +1,18 @@
 {
   "dev": {
     "port": 7002,
-    "log_format": "dev",
-    "log_directory": "./logs",
+    "log_transports": [
+      { "type": "Console", "params": { "name": "console", "colorize": true } }
+    ],
     "static_source": "./public",
-    "mongo_address": "127.0.0.1:27017/ragingGoblin"
+    "dynamo_endpoint": "http://localhost:8000"
   },
   "prod": {
-    "port": 80,
-    "log_format": "combined",
-    "log_directory": "/logs",
+    "port": 8080,
+    "log_transports": [
+      { "type": "File", "params": { "filename": "./logs/quiet-goblin.log" }}
+    ],
     "static_source": "/public",
-    "mongo_address": "mongo/ragingGoblin"
-  },
-  "e2e": {
-    "port": 7003,
-    "log_format": "dev",
-    "log_directory": "./e2e-tests/logs",
-    "static_source": "./public",
-    "mongo_address": "127.0.0.1:27017/ragingGoblinTest"
+    "dynamo_endpoint": "http://localhost:8000"
   }
 }

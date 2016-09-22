@@ -4,9 +4,11 @@
   "description": "Backend implementation for raging-goblin",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "tdd": "./e2e-tests/run-e2e-tests.sh -w",
-    "test": "./e2e-tests/run-e2e-tests.sh"
+    "e2e": "./e2e/run-e2e-tests.sh",
+    "e2e-tdd": "./e2e/run-e2e-tests.sh -w",
+    "start": "node src/app.js",
+    "tdd": "istanbul cover --root ./src --include-all-sources -x **/*.spec.js _mocha $(find src -name '*.spec.js') -- -w -R nyan",
+    "test": "istanbul cover _mocha $(find src -name '*.spec.js') -- -R nyan"
   },
   "repository": {
     "type": "git",
@@ -19,24 +21,22 @@
   },
   "homepage": "https://github.com/adamfitzpatrick/quiet-goblin#readme",
   "dependencies": {
+    "aws-sdk": "^2.6.2",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
-    "file-stream-rotator": "0.0.7",
-    "mongodb": "^2.2.9",
-    "mongoose": "^4.6.0",
-    "morgan": "^1.7.0",
-    "ncp": "^2.0.0",
+    "mkdirp": "^0.5.1",
+    "uuid": "^2.0.3",
     "yargs": "^5.0.0"
   },
   "devDependencies": {
-    "async": "^2.0.1",
     "bluebird": "^3.4.6",
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",
+    "chai-datetime": "^1.4.1",
+    "istanbul": "^0.4.5",
     "mocha": "^3.0.2",
-    "mongodb": "^2.2.10",
-    "request": "^2.74.0",
-    "request-promise": "^4.4.1",
-    "aws-sdk": "^2.6.2"
+    "rewire": "^2.5.2",
+    "sinon": "^1.17.5",
+    "winston": "^2.2.0"
   }
 }

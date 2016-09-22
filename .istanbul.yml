@@ -1,0 +1,11 @@
+instrumentation:
+  root: ./src
+  excludes: ["**/*.spec.js"]
+  include-all-sources: true
+reporting:
+  dir: ./reporting/coverage
+  watermarks:
+    statements: [95, 100]
+    lines: [95, 100]
+    functions: [95, 100]
+    branches: [95, 100]
