@@ -9,3 +9,4 @@ reporting
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+utility/db-utilities/backup/
