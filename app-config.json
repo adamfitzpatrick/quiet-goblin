@@ -4,7 +4,7 @@
     "log_transports": [
       { "type": "Console", "params": { "name": "console", "colorize": true } }
     ],
-    "static_source": "./public",
+    "static_source": "../raging-goblin/public",
     "dynamo_endpoint": "http://localhost:8000"
   },
   "prod": {

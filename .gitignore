@@ -3,7 +3,7 @@ node_modules
 build
 **/npm-debug.log
 .idea
-logs
+logs/
 reporting
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

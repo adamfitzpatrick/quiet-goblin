@@ -10,7 +10,10 @@ let supportData = {
     tags: []
 };
 while (supportData.tags.length < 15) {
-    supportData.tags.push(properize(faker.hacker.adjective()));
+    let tag = properize(faker.hacker.adjective());
+    if (supportData.tags.indexOf(tag) === -1) {
+        supportData.tags.push(tag);
+    }
 }
 
 function Post() {
@@ -27,6 +30,7 @@ let posts = [];
 while (posts.length < postsCount) {
     posts.push(new Post());
 }
+faker.random.arrayElement(posts).featured = true;
 
 module.exports = {
     ragingGoblinPosts: posts

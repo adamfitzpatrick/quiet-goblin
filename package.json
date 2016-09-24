@@ -8,7 +8,7 @@
     "manage": "node ./utility/utilities.js",
     "e2e": "./e2e/run-e2e-tests.sh",
     "e2e-tdd": "./e2e/run-e2e-tests.sh -w",
-    "start": "node src/app.js",
+    "start": "node app.js",
     "tdd": "istanbul cover --root ./src --include-all-sources -x **/*.spec.js _mocha $(find src -name '*.spec.js') -- -w -R nyan",
     "test": "istanbul cover _mocha $(find src -name '*.spec.js') -- -R nyan"
   },
@@ -40,6 +40,7 @@
     "inquirer": "^1.1.3",
     "istanbul": "^0.4.5",
     "mocha": "^3.0.2",
+    "ping": "^0.2.0",
     "prompt": "^1.0.0",
     "rewire": "^2.5.2",
     "rimraf": "^2.5.4",

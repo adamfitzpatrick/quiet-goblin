@@ -21,7 +21,7 @@ describe("PostsRepository", () => {
 
     describe("static properties", () => {
         it("should be configured properly", () => {
-            PostsRepository.should.have.property("table", "ragingGoblinPosts");
+            repo.should.have.property("table", "ragingGoblinPosts");
         });
     });
 
@@ -41,12 +41,31 @@ describe("PostsRepository", () => {
         });
     });
 
+    describe("update", () => {
+        it("should call update on the document client", () => {
+            let params = {
+                TableName: "ragingGoblinPosts",
+                Key: { id: "1" },
+                UpdateExpression: "set title = :title",
+                ExpressionAttributeValues: { ":title": "New title" },
+                ReturnValues:"UPDATED_NEW"
+            };
+            docClientMock.expects("updateAsync").once()
+                .withExactArgs(params)
+                .returns(Promise.resolve({ id: "1", title: "New title" }));
+            return repo.update("1", { title: "New title" }).then((data) => {
+                docClientMock.verify();
+                data.should.eql({ id: "1", title: "New title" });
+            });
+        });
+    });
+
     describe("scan", () => {
         it("should call scan on the document client", () => {
             let params = { TableName: "ragingGoblinPosts" };
             docClientMock.expects("scanAsync").once()
                 .withExactArgs(params)
-                .returns(Promise.resolve([testPost]));
+                .returns(Promise.resolve({ Items: [testPost] }));
             return repo.scan().then((data) => {
                 docClientMock.verify();
                 data.should.eql([testPost]);
