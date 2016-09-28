@@ -7,6 +7,14 @@
     "static_source": "../raging-goblin/public",
     "dynamo_endpoint": "http://localhost:8000"
   },
+  "e2e": {
+    "port": 7003,
+    "log_transports": [
+      { "type": "Console", "params": { "name": "console", "colorize": true } }
+    ],
+    "static_source": ".",
+    "dynamo_endpoint": "http://localhost:8000"
+  },
   "prod": {
     "port": 8080,
     "log_transports": [

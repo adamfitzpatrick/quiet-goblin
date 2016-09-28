@@ -4,7 +4,6 @@ let chai = require("chai");
 chai.use(require("chai-datetime"));
 chai.should();
 let sinon = require("sinon");
-let rewire = require("rewire");
 
 let PostsRepository = require("./posts-repository");
 
@@ -41,25 +40,6 @@ describe("PostsRepository", () => {
         });
     });
 
-    describe("update", () => {
-        it("should call update on the document client", () => {
-            let params = {
-                TableName: "ragingGoblinPosts",
-                Key: { id: "1" },
-                UpdateExpression: "set title = :title",
-                ExpressionAttributeValues: { ":title": "New title" },
-                ReturnValues:"UPDATED_NEW"
-            };
-            docClientMock.expects("updateAsync").once()
-                .withExactArgs(params)
-                .returns(Promise.resolve({ id: "1", title: "New title" }));
-            return repo.update("1", { title: "New title" }).then((data) => {
-                docClientMock.verify();
-                data.should.eql({ id: "1", title: "New title" });
-            });
-        });
-    });
-
     describe("scan", () => {
         it("should call scan on the document client", () => {
             let params = { TableName: "ragingGoblinPosts" };
@@ -69,6 +49,22 @@ describe("PostsRepository", () => {
             return repo.scan().then((data) => {
                 docClientMock.verify();
                 data.should.eql([testPost]);
+            });
+        });
+    });
+
+    describe("get", () => {
+        it("should call get on the document client", () => {
+            let params = {
+                TableName: "ragingGoblinPosts",
+                Key: { id: "1" }
+            };
+            docClientMock.expects("getAsync").once()
+                .withExactArgs(params)
+                .returns(Promise.resolve({ Item: testPost }));
+            return repo.get("1").then((data) => {
+                docClientMock.verify();
+                data.should.eql(testPost);
             });
         });
     });

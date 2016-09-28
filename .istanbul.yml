@@ -3,9 +3,18 @@ instrumentation:
   excludes: ["**/*.spec.js"]
   include-all-sources: true
 reporting:
+  print: summary
   dir: ./reporting/coverage
+  reports:
+    - html
   watermarks:
     statements: [95, 100]
     lines: [95, 100]
     functions: [95, 100]
     branches: [95, 100]
+check:
+  global:
+    statements: 95
+    lines: 95
+    branches: 95
+    functions: 95

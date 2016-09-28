@@ -1,6 +1,6 @@
 "use strict";
 
-let Promise = require("bluebird");
+let bluebird = require("bluebird");
 let chalk = require("chalk");
 let AWS = require("aws-sdk");
 require("../../src/configuration/aws-config");
@@ -8,25 +8,34 @@ require("../../src/configuration/aws-config");
 let tables = require("./datatables.json");
 
 let dynamodb = new AWS.DynamoDB();
-Promise.promisifyAll(dynamodb);
+bluebird.promisifyAll(dynamodb);
 
-let createTable = (table) => {
+let createTable = (table, silent) => {
     return dynamodb.createTableAsync(table).then(() => {
-        console.log(chalk.green(`Created table ${table.TableName}`));
+        if (!silent) {
+            console.log(chalk.green(`Created table ${table.TableName}`));
+        }
     }).catch(err => {
-        console.log(chalk.red(`Unable to create table ${table.TableName}. Error JSON: ${err.cause}`));
+        if (!silent) {
+            /* jshint maxlen: false */
+            console.log(chalk.red(`Unable to create table ${table.TableName}. Error JSON: ${err.cause}`));
+        }
     });
 };
 
-module.exports = function () {
+module.exports = function (silent) {
     let promises = [];
     tables.forEach((table) => {
-        let promise = dynamodb.deleteTableAsync({ TableName: table.TableName }).then(() => createTable(table))
+        let promise = dynamodb.deleteTableAsync({ TableName: table.TableName })
+            .then(() => createTable(table, silent))
             .catch(err => {
-                console.log(chalk.red(`Unable to delete table ${table.TableName}. Error JSON: ${err.cause}`));
-                return createTable(table);
+                if (!silent) {
+                    /* jshint maxlen: false */
+                    console.log(chalk.red(`Unable to delete table ${table.TableName}. Error JSON: ${err.cause}`));
+                }
+                return createTable(table, silent);
             });
         promises.push(promise);
     });
-    return Promise.all(promises);
+    return bluebird.all(promises);
 };

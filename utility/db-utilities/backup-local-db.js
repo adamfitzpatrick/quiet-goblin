@@ -1,14 +1,14 @@
 "use strict";
 
-let Promise = require("bluebird");
+let bluebird = require("bluebird");
 let fs = require("fs");
-Promise.promisifyAll(fs);
+bluebird.promisifyAll(fs);
 let path = require("path");
 
 let AWS = require("aws-sdk");
 
-let mkdirp = Promise.promisify(require("mkdirp"));
-let rimraf = Promise.promisify(require("rimraf"));
+let mkdirp = bluebird.promisify(require("mkdirp"));
+let rimraf = bluebird.promisify(require("rimraf"));
 let chalk = require("chalk");
 require("../../src/configuration/aws-config");
 
@@ -16,7 +16,7 @@ let backupDir = path.resolve(__dirname, "./backup");
 let tables = require("./datatables.json");
 
 let docClient = new AWS.DynamoDB.DocumentClient();
-Promise.promisifyAll(docClient);
+bluebird.promisifyAll(docClient);
 
 function saveData(tableName, data) {
     fs.writeFileAsync(path.join(backupDir, `${tableName}.json`), JSON.stringify(data))
@@ -34,7 +34,7 @@ function scanTable(table) {
 
 function doBackup() {
     tables.forEach(scanTable);
-    let backupPromise = Promise.all(promises).then(() => {
+    let backupPromise = bluebird.all(promises).then(() => {
         console.log(chalk.green("Local database backed up successfully"));
     }).catch((err) => {
         console.log(chalk.red(err.cause));

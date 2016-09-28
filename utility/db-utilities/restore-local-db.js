@@ -1,6 +1,6 @@
 "use strict";
 
-let Promise = require("bluebird");
+let bluebird = require("bluebird");
 let path = require("path");
 let AWS = require("aws-sdk");
 let chalk = require("chalk");
@@ -10,7 +10,7 @@ let backupDir = path.resolve(__dirname, "./backup");
 let tables = require("./datatables.json");
 
 let docClient = new AWS.DynamoDB.DocumentClient();
-Promise.promisifyAll(docClient);
+bluebird.promisifyAll(docClient);
 
 let maxCount = 25;
 
@@ -42,7 +42,8 @@ function batchWriteChunk(table, chunk) {
     return docClient.batchWriteAsync(request).then(() => {
         console.log(chalk.green(`${chunk.length} item(s) written to ${table.TableName}.`));
     }).catch((err) => {
-        console.log(chalk.red(`Error writing ${chunk.length} item(s) to ${table.TableName}: ${err.cause}`));
+        /* jshint maxlen: false */
+        console.log(chalk.red(`Error writing ${chunk.length} item(s)to ${table.TableName}: ${err.cause}`));
     });
 }
 
@@ -54,7 +55,7 @@ function doRestore(fake) {
             promises.push(batchWriteChunk(table, chunk));
         });
     });
-    return Promise.all(promises);
+    return bluebird.all(promises);
 }
 
 module.exports = function (fake) {

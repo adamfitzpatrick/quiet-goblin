@@ -13,8 +13,21 @@ function PostRoutes(router) {
 }
 
 PostRoutes.prototype.addPost = (request, response) => {
-    let posts = new Post(request.body);
-    return _this.repository.put(posts).then((data) => response.json(data));
+    let post = new Post(request.body);
+    return _this.repository.put(post).then((data) => response.json(data));
+};
+
+PostRoutes.prototype.updatePost = (request, response) => {
+    let id = request.params.id;
+    return _this.repository.get(id).then((data) => {
+        if (data.status) {
+            return response.json(data);
+        } else {
+            let postToUpdate = new Post(data);
+            postToUpdate.updateProperties(request.body);
+            return _this.repository.put(postToUpdate).then((data) => response.json(data));
+        }
+    });
 };
 
 PostRoutes.prototype.getPosts = (request, response) => {
@@ -24,6 +37,7 @@ PostRoutes.prototype.getPosts = (request, response) => {
 PostRoutes.prototype.makeRoutes = function () {
     this.router.get("/posts", this.getPosts);
     this.router.post("/posts", this.addPost);
+    this.router.post("/posts/:id", this.updatePost);
 };
 
 module.exports = PostRoutes;

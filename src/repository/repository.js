@@ -2,7 +2,7 @@
 
 let AWS = require("aws-sdk");
 let LOGGER = require("../configuration/logger");
-let Promise = require("bluebird");
+let bluebird = require("bluebird");
 
 let getParams = function (repository, otherParams) {
     let params = { TableName: repository.table };
@@ -24,22 +24,8 @@ let writeLog = (repository, message, operation, err) => {
     LOGGER.log(level, message, payload);
 };
 
-let makeUpdateExpression = (properties) => {
-    let values = Object.keys(properties);
-    let expression = "set ";
-    values.forEach((val) => expression += `${val} = :${val}, `);
-    return expression.slice(0, expression.length - 2);
-};
-
-let makeExpressionAttributeValues = (properties) => {
-    let values = Object.keys(properties);
-    let eavs = {};
-    values.forEach((val) => eavs[`:${val}`] = properties[val]);
-    return eavs;
-};
-
 function Repository() {
-    this.docClient = Promise.promisifyAll(new AWS.DynamoDB.DocumentClient());
+    this.docClient = bluebird.promisifyAll(new AWS.DynamoDB.DocumentClient());
     this.table = null;
 }
 
@@ -49,24 +35,6 @@ Repository.prototype.put = function (item) {
         return item;
     }).catch((err) => {
         writeLog(this, `Failed adding item to table ${this.table}`, "put",
-            JSON.stringify(err, null, 1));
-        return err;
-    });
-};
-
-Repository.prototype.update = function (id, properties) {
-    let params = {
-        Key:{ id: id },
-        UpdateExpression: makeUpdateExpression(properties),
-        ExpressionAttributeValues: makeExpressionAttributeValues(properties),
-        ReturnValues:"UPDATED_NEW"
-    };
-    return this.docClient.updateAsync(getParams(this, params)).then(() => {
-        writeLog(this, `Updated item ${id} in table ${this.table}`, "update");
-        properties.id = id;
-        return properties;
-    }).catch((err) => {
-        writeLog(this, `Failed updating item ${id} in table ${this.table}`, "update",
             JSON.stringify(err, null, 1));
         return err;
     });
@@ -85,8 +53,15 @@ Repository.prototype.scan = function () {
 
 Repository.prototype.get = function (key) {
     return this.docClient.getAsync(getParams(this, { Key: { id: key }})).then((data) => {
-        writeLog(this, `Returning item ${key} from table ${this.table}`, "get")
-        return data.Item;
+        if (data.Item) {
+            writeLog(this, `Returning item ${key} from table ${this.table}`, "get");
+            return data.Item;
+        } else {
+            let err = { status: 404, cause: "not found" };
+            writeLog(this, `Error getting item ${key} from table ${this.table}`, "get",
+                JSON.stringify(err, null, 1));
+            return err;
+        }
     }).catch((err) => {
         writeLog(this, `Error getting item ${key} from table ${this.table}`, "get",
             JSON.stringify(err, null, 1));

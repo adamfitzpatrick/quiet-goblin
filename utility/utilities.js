@@ -10,7 +10,7 @@ function ListMenu(id, message, tasks) {
         name: id,
         message: message,
         choices: tasks.map(task => task.name)
-    }
+    };
 }
 ListMenu.prototype.getTask = function (taskName) {
     return this.tasks.find(task => task.name === taskName).task;
@@ -40,13 +40,17 @@ let databaseManagementTasks = [{
     name: "Restore database",
     task: restoreDatabase
 }, {
+    name: "Wipe database",
+    task: wipeDatabase
+}, {
     name: "Write fake data to database",
     task: fakeDatabase
 }, {
     name: "Back to main menu",
     task: mainMenu
 }];
-applicationContent.databaseManagement = new ListMenu("mgdb", "Select a database operation:", databaseManagementTasks);
+applicationContent.databaseManagement = new ListMenu("mgdb", "Select a database operation:",
+    databaseManagementTasks);
 
 function mainMenu() {
     applicationContent.mainMenu.show();
@@ -81,6 +85,17 @@ function restoreDatabase() {
         });
 }
 
+function wipeDatabase() {
+    confirmAction("This will erase the entire database. Continue? (y/N) ")
+        .then((go) => {
+            if (go) {
+                require("./db-utilities/make-tables")().then(databaseManagement);
+            } else {
+                databaseManagement();
+            }
+        });
+}
+
 function fakeDatabase() {
     confirmAction("This will erase the entire database. Continue? (y/N) ")
         .then((go) => {
@@ -92,6 +107,6 @@ function fakeDatabase() {
         });
 }
 
-function quitApplication() { exit(0); }
+function quitApplication() { process.exit(0); }
 
 mainMenu();

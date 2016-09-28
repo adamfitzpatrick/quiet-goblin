@@ -1,7 +1,6 @@
 "use strict";
 
 let chai = require("chai");
-chai.use(require("chai-datetime"));
 chai.should();
 let rewire = require("rewire");
 
@@ -14,7 +13,7 @@ describe("Post", () => {
     let post;
 
     beforeEach(() => {
-        date = new Date("1/1/2015");
+        date = new Date("1/1/2015").toISOString();
         postObject = {
             date: date,
             title: "Test Post",
@@ -39,15 +38,21 @@ describe("Post", () => {
             post.should.have.property("tags", postObject.tags);
         });
 
+        it("should create an instance of Post with the existing id when one is provided", () => {
+            postObject.id = "2";
+            post = new Post(postObject);
+            post.id.should.equal("2");
+        });
+
         it("should create an instance of Post with the current date when date is missing", () => {
             delete postObject.date;
-            new Post(postObject).date.should.be.afterTime(date);
+            new Post(postObject).date.should.be.above(date);
         });
 
         it("should make tags and empty array if tags are missing", () => {
             delete postObject.tags;
             new Post(postObject).tags.should.eql([]);
-        })
+        });
     });
 
     describe("addTag", () => {
@@ -55,5 +60,13 @@ describe("Post", () => {
             post.addTag("Tag 3");
             post.tags.should.eql(["Tag 1", "Tag 2", "Tag 3"]);
         });
-    })
+    });
+
+    describe("updateProperties", () => {
+        it("should replace value of existing properties with properties passed in", () => {
+            post.updateProperties({ title: "New post", cover: "new-image" });
+            post.title.should.equal("New post");
+            post.cover.should.equal("new-image");
+        });
+    });
 });

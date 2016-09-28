@@ -4,13 +4,14 @@
   "description": "Backend implementation for raging-goblin",
   "main": "app.js",
   "scripts": {
-    "ci": "npm test",
+    "ci": "npm test && istanbul check-coverage",
+    "e2e": "istanbul cover _mocha $(find e2e -name '*.spec.js') -- -R nyan",
+    "e2e-tdd": "watch 'npm run -s e2e' ./**/ --filter=./spec-filter.js --interval=1",
+    "lint": "jshint . --exclude-path=.gitignore --reporter=node_modules/jshint-stylish ",
     "manage": "node ./utility/utilities.js",
-    "e2e": "./e2e/run-e2e-tests.sh",
-    "e2e-tdd": "./e2e/run-e2e-tests.sh -w",
     "start": "node app.js",
-    "tdd": "istanbul cover --root ./src --include-all-sources -x **/*.spec.js _mocha $(find src -name '*.spec.js') -- -w -R nyan",
-    "test": "istanbul cover _mocha $(find src -name '*.spec.js') -- -R nyan"
+    "tdd": "watch 'npm test' ./src/**/ --filter=./spec-filter.js --interval=0.1",
+    "test": "npm run -s lint && istanbul cover _mocha $(find src -name '*.spec.js') -- -R nyan"
   },
   "repository": {
     "type": "git",
@@ -39,12 +40,15 @@
     "faker": "^3.1.0",
     "inquirer": "^1.1.3",
     "istanbul": "^0.4.5",
+    "jshint": "^2.9.3",
+    "jshint-stylish": "^2.2.1",
     "mocha": "^3.0.2",
     "ping": "^0.2.0",
     "prompt": "^1.0.0",
     "rewire": "^2.5.2",
     "rimraf": "^2.5.4",
     "sinon": "^1.17.5",
+    "watch": "^0.19.2",
     "winston": "^2.2.0"
   }
 }
