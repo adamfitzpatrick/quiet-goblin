@@ -1,6 +1,6 @@
 public
 node_modules
-build
+temp
 **/npm-debug.log
 .idea
 logs/

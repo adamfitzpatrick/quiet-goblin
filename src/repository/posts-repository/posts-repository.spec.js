@@ -1,7 +1,6 @@
 "use strict";
 
 let chai = require("chai");
-chai.use(require("chai-datetime"));
 chai.should();
 let sinon = require("sinon");
 

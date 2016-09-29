@@ -1,7 +1,6 @@
 "use strict";
 
 let chai = require("chai");
-chai.use(require("chai-datetime"));
 chai.use(require("chai-as-promised"));
 chai.should();
 
@@ -9,8 +8,9 @@ let bluebird = require("bluebird");
 let request = bluebird.promisify(require("request"));
 let dbOps = require("../utility/db-utilities/basic-db-ops");
 let Post = require("../src/models/post/post");
+let appConfig = require("../app-config.json").e2e;
 
-let origin = `http://localhost:7003`;
+let origin = `http://localhost:${appConfig.port}`;
 
 let parseResponse = (res) => JSON.parse(res.body);
 
@@ -35,6 +35,13 @@ describe("posts routes", () => {
             response.should.eventually.have.length.above(0);
             response.should.eventually.have.property(0).with.property("id");
         });
+
+        it("should get a single post by id", () => {
+            let response = request(`${origin}/posts/${post.id}`).then(parseResponse);
+            response.should.eventually.have.property("id", post.id);
+            response.should.eventually.have.property("title", "Test Post");
+            return response;
+        });
     });
 
     describe("post /posts", () => {
@@ -52,15 +59,20 @@ describe("posts routes", () => {
         it("should add a single post when the post id is not included", () => {
             return request(options).then((data) => {
                 let id = JSON.parse(data.body).id;
-                let result = dbOps.get("ragingGoblinPosts", id);
-                result.should.eventually.have.property("Item").which.has.property("id", id);
-                result.should.eventually.have.property("title", "Test post");
-                return result.should.eventually;
+                return dbOps.get("ragingGoblinPosts", id).should.eventually
+                    .have.property("Item").which.has.property("title", "Test Post");
             });
         });
 
         it("should modify an existing post when the post id is included", () => {
-            options.url += "/";
+            options.url += `/${post.id}`;
+            options.body = JSON.stringify({ title: "Updated title" });
+            post.title = "Updated title";
+            return request(options).then(parseResponse).then((data) => {
+                data.should.have.property("title", "Updated title");
+                return dbOps.get("ragingGoblinPosts", post.id).should.eventually
+                    .have.property("Item").which.has.property("title", "Updated title");
+            });
         });
     });
 });

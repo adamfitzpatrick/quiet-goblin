@@ -1,7 +1,6 @@
 "use strict";
 
 let chai = require("chai");
-chai.use(require("chai-datetime"));
 chai.should();
 let sinon = require("sinon");
 let rewire = require("rewire");
@@ -40,6 +39,7 @@ describe("PostsRoutes", () => {
             router.get.calledWithExactly("/posts", postsRoutes.getPosts).should.equal(true);
             router.post.calledWithExactly("/posts", postsRoutes.addPost).should.equal(true);
             router.post.calledWithExactly("/posts/:id", postsRoutes.updatePost).should.equal(true);
+            //router.get.calledWithExactly("/posts/:id", postsRoutes.getPost).should.equal(true);
         });
     });
 
@@ -97,6 +97,18 @@ describe("PostsRoutes", () => {
             return postsRoutes.getPosts(request, response).then((data) => {
                 repositoryMock.verify();
                 data.should.eql([testPost]);
+            });
+        });
+    });
+
+    describe("getPost", () => {
+        it("should fetch a single post from the repo", () => {
+            request = { params: { id: "1" }};
+            repositoryMock.expects("get").once().withExactArgs("1")
+                .returns(Promise.resolve(testPost));
+            return postsRoutes.getPost(request, response).then((data) => {
+                repositoryMock.verify();
+                data.should.eql(testPost);
             });
         });
     });

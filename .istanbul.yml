@@ -1,7 +1,3 @@
-instrumentation:
-  root: ./src
-  excludes: ["**/*.spec.js"]
-  include-all-sources: true
 reporting:
   print: summary
   dir: ./reporting/coverage
