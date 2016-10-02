@@ -2,11 +2,12 @@
 
 let Repository = require("../repository");
 
-function PostsRepository() {
-    Repository.call(this);
-    this.table = "ragingGoblinPosts";
-}
+class PostsRepository extends Repository {
 
-Repository.extendTo(PostsRepository);
+    constructor() {
+        super();
+        this.table = "ragingGoblinPosts";
+    }
+}
 
 module.exports = PostsRepository;
