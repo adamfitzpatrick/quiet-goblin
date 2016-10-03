@@ -9,10 +9,8 @@
   },
   "e2e": {
     "port": 7003,
-    "log_transports": [
-      { "type": "Console", "params": { "name": "console", "colorize": true } }
-    ],
-    "static_source": ".",
+    "log_transports": [],
+    "static_source": "./e2e",
     "dynamo_endpoint": "http://localhost:8000"
   },
   "prod": {

@@ -1,4 +1,7 @@
 language: node_js
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y default-jre
 node_js:
   - "5.0.0"
   - "4.0.0"

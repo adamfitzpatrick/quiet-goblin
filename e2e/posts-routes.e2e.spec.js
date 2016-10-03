@@ -30,17 +30,19 @@ describe("posts routes", () => {
     });
 
     describe("get /posts", () => {
-        it("should get an array of posts", () => {
-            let response = request(`${origin}/posts`).then(parseResponse);
-            response.should.eventually.have.length.above(0);
-            response.should.eventually.have.property(0).with.property("id");
+        it("should get an array of items", () => {
+            return request(`${origin}/posts`).then(parseResponse)
+                .should.eventually.have.length.above(0);
+        });
+
+        it("should return posts", () => {
+            return request(`${origin}/posts`).then(parseResponse)
+                .should.eventually.have.property(0).with.property("id");
         });
 
         it("should get a single post by id", () => {
-            let response = request(`${origin}/posts/${post.id}`).then(parseResponse);
-            response.should.eventually.have.property("id", post.id);
-            response.should.eventually.have.property("title", "Test Post");
-            return response;
+            return request(`${origin}/posts/${post.id}`).then(parseResponse)
+                .should.eventually.have.property("title", "Test Post");
         });
     });
 

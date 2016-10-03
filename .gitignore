@@ -10,3 +10,4 @@ reporting
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 utility/db-utilities/backup/
+dynamoDB
