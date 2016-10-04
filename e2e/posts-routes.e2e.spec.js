@@ -26,7 +26,7 @@ describe("posts routes", () => {
             height: 100,
             tags: ["tag1"]
         });
-        return dbOps.put("ragingGoblinPosts", post);
+        return dbOps.put("ragingGoblin_posts", post);
     });
 
     describe("get /posts", () => {
@@ -61,7 +61,7 @@ describe("posts routes", () => {
         it("should add a single post when the post id is not included", () => {
             return request(options).then((data) => {
                 let id = JSON.parse(data.body).id;
-                return dbOps.get("ragingGoblinPosts", id).should.eventually
+                return dbOps.get("ragingGoblin_posts", id).should.eventually
                     .have.property("Item").which.has.property("title", "Test Post");
             });
         });
@@ -72,7 +72,7 @@ describe("posts routes", () => {
             post.title = "Updated title";
             return request(options).then(parseResponse).then((data) => {
                 data.should.have.property("title", "Updated title");
-                return dbOps.get("ragingGoblinPosts", post.id).should.eventually
+                return dbOps.get("ragingGoblin_posts", post.id).should.eventually
                     .have.property("Item").which.has.property("title", "Updated title");
             });
         });

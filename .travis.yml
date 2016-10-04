@@ -3,8 +3,7 @@ before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y default-jre
 node_js:
-  - "5.0.0"
-  - "4.0.0"
+  - "6.0.0"
 env:
   - CXX=g++-4.8
 addons:

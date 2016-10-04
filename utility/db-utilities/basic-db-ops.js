@@ -1,5 +1,8 @@
 "use strict";
 
+process.argv.push("--env");
+process.argv.push("e2e");
+
 let bluebird = require("bluebird");
 let AWS = require("aws-sdk");
 
@@ -10,7 +13,9 @@ bluebird.promisifyAll(docClient);
 
 let put = (tableName, item) => {
     if (item.date) { item.date = item.date.toISOString(); }
-    return docClient.putAsync({ TableName: tableName, Item: item});
+    return docClient.putAsync({ TableName: tableName, Item: item}).catch((err) => {
+        console.log(err);
+    });
 };
 
 let get = (tableName, id) => {

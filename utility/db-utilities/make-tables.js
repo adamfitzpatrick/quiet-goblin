@@ -1,5 +1,8 @@
 "use strict";
 
+process.argv.push("--env");
+process.argv.push("e2e");
+
 let bluebird = require("bluebird");
 let chalk = require("chalk");
 let AWS = require("aws-sdk");

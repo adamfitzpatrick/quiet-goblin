@@ -17,7 +17,7 @@ module.exports = function () {
 
     initRoutes(app);
 
-    let port = appConfig.port;
+    let port = appConfig.port || process.env.PORT;
     app.listen(port);
     LOGGER.log("info", `Goblins listening on ${port}`);
 };

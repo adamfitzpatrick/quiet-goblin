@@ -19,14 +19,14 @@ describe("PostsRepository", () => {
 
     describe("static properties", () => {
         it("should be configured properly", () => {
-            repo.should.have.property("table", "ragingGoblinPosts");
+            repo.should.have.property("table", "ragingGoblin_posts");
         });
     });
 
     describe("put", () => {
         it("should call put on the document client", () => {
             let params = {
-                TableName: "ragingGoblinPosts",
+                TableName: "ragingGoblin_posts",
                 Item: testPost
             };
             docClientMock.expects("putAsync").once()
@@ -41,7 +41,7 @@ describe("PostsRepository", () => {
 
     describe("scan", () => {
         it("should call scan on the document client", () => {
-            let params = { TableName: "ragingGoblinPosts" };
+            let params = { TableName: "ragingGoblin_posts" };
             docClientMock.expects("scanAsync").once()
                 .withExactArgs(params)
                 .returns(Promise.resolve({ Items: [testPost] }));
@@ -55,7 +55,7 @@ describe("PostsRepository", () => {
     describe("get", () => {
         it("should call get on the document client", () => {
             let params = {
-                TableName: "ragingGoblinPosts",
+                TableName: "ragingGoblin_posts",
                 Key: { id: "1" }
             };
             docClientMock.expects("getAsync").once()

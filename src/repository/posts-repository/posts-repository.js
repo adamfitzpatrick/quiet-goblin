@@ -6,7 +6,7 @@ class PostsRepository extends Repository {
 
     constructor() {
         super();
-        this.table = "ragingGoblinPosts";
+        this.table = "ragingGoblin_posts";
     }
 }
 

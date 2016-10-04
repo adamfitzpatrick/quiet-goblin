@@ -1,5 +1,8 @@
 "use strict";
 
+process.argv.push("--env");
+process.argv.push("e2e");
+
 let inquirer = require("inquirer");
 
 function ListMenu(id, message, tasks) {

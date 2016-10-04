@@ -33,5 +33,5 @@ while (posts.length < postsCount) {
 faker.random.arrayElement(posts).featured = true;
 
 module.exports = {
-    ragingGoblinPosts: posts
+    ragingGoblin_posts: posts
 };

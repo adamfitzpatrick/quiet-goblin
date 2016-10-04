@@ -38,8 +38,9 @@ describe("PostsRoutes", () => {
         it("should add endpoints to router", () => {
             router.get.calledWithExactly("/posts", postsRoutes.getPosts).should.equal(true);
             router.post.calledWithExactly("/posts", postsRoutes.addPost).should.equal(true);
-            router.post.calledWithExactly("/posts/:id", postsRoutes.updatePost).should.equal(true);
-            //router.get.calledWithExactly("/posts/:id", postsRoutes.getPost).should.equal(true);
+            router.post.calledWithExactly("/posts/:id", postsRoutes.updatePost)
+                .should.equal(true);
+            router.get.calledWithExactly("/posts/:id", postsRoutes.getPost).should.equal(true);
         });
     });
 

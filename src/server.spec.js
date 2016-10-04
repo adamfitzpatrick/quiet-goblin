@@ -24,7 +24,7 @@ describe("application configuration", () => {
         it("should set configuration parameters on AWS", () => {
             let AWS = require("aws-sdk");
             AWS.config.should.have.property("region", "us-west-2");
-            AWS.config.should.have.property("endpoint", "http://localhost:8000");
+            AWS.config.should.have.property("endpoint", "http://dynamodb.us-west-2.amazonaws.com");
         });
     });
 

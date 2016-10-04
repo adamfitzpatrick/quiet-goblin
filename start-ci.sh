@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-npm run lint
-if [ $? -ne 0 ]; then
-  exit 1
-fi
-
 npm run test
 if [ $? -ne 0 ]; then
   exit 1
@@ -39,8 +34,7 @@ echo "Local database ready."
 
 node ./utility/db-utilities/initialize-tables.js
 
-npm start -- --env e2e &> /dev/null &
-
+npm start -- --env e2e &
 
 CURRENTWAIT=1
 curl http://localhost:7003 &> /dev/null

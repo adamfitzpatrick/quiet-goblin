@@ -1,5 +1,5 @@
 [{
-  "TableName" : "ragingGoblinPosts",
+  "TableName" : "ragingGoblin_posts",
   "KeySchema": [
     { "AttributeName": "id", "KeyType": "HASH"}
   ],
