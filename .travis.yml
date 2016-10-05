@@ -11,13 +11,17 @@ addons:
     packages:
     - g++-4.8
 script: npm run ci
+env:
+- DO_DEPLOY=
+before_deploy:
+- . ./deploy_vars.sh
+- DO_DEPLOY=$(if [ $ENV_TAG ]; then echo true; fi)
 deploy:
-  provider: elasticbeanstalk
+- provider: elasticbeanstalk
   region: us-west-2
   app: quiet-goblin
-  env: quiet-goblin-dev
-  key:
   bucket_name: elasticbeanstalk-us-west-2-615413463961
+  skip_cleanup: true
   on:
-    repo: adamfitzpatrick/quiet-goblin
-    branch: feature/automate-deploy
+    all_branches: true
+    condition: ${#DO_DEPLOY} -gt 0
