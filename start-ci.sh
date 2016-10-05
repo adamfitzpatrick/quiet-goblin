@@ -5,10 +5,9 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-if [ ! -f ~/.aws/credentials ]; then
-  mkdirp ~/.aws
-  cp fake-credentials ~/.aws/credentials
-fi
+echo ********************************************
+echo $TRAVIS_BRANCH
+echo ********************************************
 
 mkdir -p dynamoDB
 cd dynamoDB
@@ -34,7 +33,7 @@ echo "Local database ready."
 
 node ./utility/db-utilities/initialize-tables.js
 
-npm start -- --env e2e &
+npm start -- --env e2e &> /dev/null &
 
 CURRENTWAIT=1
 curl http://localhost:7003 &> /dev/null

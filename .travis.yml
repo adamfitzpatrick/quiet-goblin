@@ -1,16 +1,23 @@
 language: node_js
 before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y default-jre
+- sudo apt-get -qq update
+- sudo apt-get install -y default-jre
 node_js:
-  - "5.0.0"
-env:
-  - CXX=g++-4.8
+- 5.0.0
 addons:
   apt:
     sources:
-      - ubuntu-toolchain-r-test
+    - ubuntu-toolchain-r-test
     packages:
-      - g++-4.8
-script:
-  npm run ci
+    - g++-4.8
+script: npm run ci
+deploy:
+  provider: elasticbeanstalk
+  region: us-west-2
+  app: quiet-goblin
+  env: quiet-goblin-dev
+  key:
+  bucket_name: elasticbeanstalk-us-west-2-615413463961
+  on:
+    repo: adamfitzpatrick/quiet-goblin
+    branch: feature/automate-deploy
