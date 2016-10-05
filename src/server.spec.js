@@ -49,8 +49,11 @@ describe("application configuration", () => {
         let expressSpy;
         let expressAppSpy;
         let server;
+        let port;
 
         beforeEach(() => {
+            port = 8080;
+            process.env.PORT = port;
             server = rewire("./server");
             expressAppSpy = {
                 use: sinon.spy(),
@@ -75,8 +78,8 @@ describe("application configuration", () => {
             expressSpy.static.calledWithExactly("/public");
         });
 
-        it("should listen on 8080 if database is available", () => {
-            expressAppSpy.listen.calledWithExactly(8080).should.equal(true);
+        it("should listen on process.env.PORT if database is available", () => {
+            expressAppSpy.listen.calledWithExactly(port.toString()).should.equal(true);
         });
     });
 });
