@@ -5,10 +5,6 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo ********************************************
-echo $TRAVIS_BRANCH
-echo ********************************************
-
 mkdir -p dynamoDB
 cd dynamoDB
 curl -L http://dynamodb-local.s3-website-us-west-2.amazonaws.com/dynamodb_local_latest.tar.gz | tar xz
