@@ -12,7 +12,7 @@ addons:
     - g++-4.8
 script: npm run ci
 env:
-- DO_DEPLOY=false
+- DO_DEPLOY=
 before_deploy:
 - . ./deploy_vars.sh
 - DO_DEPLOY=$(if [ $ENV_TAG ]; then echo true; fi)
@@ -21,7 +21,7 @@ deploy:
   region: us-west-2
   app: quiet-goblin
   bucket_name: elasticbeanstalk-us-west-2-615413463961
+  skip_cleanup: true
   on:
     all_branches: true
-    condition: $DO_DEPLOY
-    skip_cleanup: true
+    condition: ${#DO_DEPLOY} -gt 0
