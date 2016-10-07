@@ -10,12 +10,9 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - g++-4.8
-script: npm run ci
-env:
-- DO_DEPLOY=
-before_deploy:
+script:
+- npm run ci
 - . ./deploy_vars.sh
-- DO_DEPLOY=$(if [ $ENV_TAG ]; then echo true; fi)
 deploy:
 - provider: elasticbeanstalk
   region: us-west-2
@@ -24,4 +21,4 @@ deploy:
   skip_cleanup: true
   on:
     all_branches: true
-    condition: ${#DO_DEPLOY} -gt 0
+    condition: $ENV_TAG

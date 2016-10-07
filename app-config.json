@@ -5,19 +5,38 @@
       { "type": "Console", "params": { "name": "console", "colorize": true, "maxsize": 1000000 }}
     ],
     "static_source": "../raging-goblin/public",
-    "dynamo_endpoint": "http://localhost:8000"
+    "dynamo_endpoint": "http://localhost:8000",
+    "dynamo_tables": {
+      "posts": "ragingGoblin_posts"
+    }
   },
   "e2e": {
     "port": 7003,
     "log_transports": [],
     "static_source": "./e2e",
-    "dynamo_endpoint": "http://localhost:8000"
+    "dynamo_endpoint": "http://localhost:8000",
+    "dynamo_tables": {
+      "posts": "ragingGoblin_posts"
+    }
+  },
+  "qa": {
+    "log_transports": [
+      { "type": "Console", "params": { "name": "console", "colorize": true, "maxsize": 1000000 }}
+    ],
+    "static_source": "./public",
+    "dynamo_endpoint": "http://dynamodb.us-west-2.amazonaws.com",
+    "dynamo_tables": {
+      "posts": "ragingGoblin_qa_posts"
+    }
   },
   "prod": {
     "log_transports": [
-      { "type": "File", "params": { "filename": "./logs/quiet-goblin.log" }}
+      { "type": "Console", "params": { "name": "console", "colorize": true, "maxsize": 1000000 }}
     ],
     "static_source": "/public",
-    "dynamo_endpoint": "http://dynamodb.us-west-2.amazonaws.com"
+    "dynamo_endpoint": "http://dynamodb.us-west-2.amazonaws.com",
+    "dynamo_tables": {
+      "posts": "ragingGoblin_posts"
+    }
   }
 }
