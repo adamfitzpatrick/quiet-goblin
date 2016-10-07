@@ -5,6 +5,6 @@ SEMVER=$(echo $ELASTIC_BEANSTALK_LABEL | cut -d - -f 1)
 if [ "$ELASTIC_BEANSTALK_LABEL" = "$SEMVER" ]; then
   export ENV_TAG="prod"
 else
-  export ENV_TAG=$(echo $ELASTIC_BEANSTALK_LABEL | cut -d - -f 2 | cut -d . -f 1 | grep "dev")
+  export ENV_TAG=$(echo $ELASTIC_BEANSTALK_LABEL | cut -d - -f 2 | cut -d . -f 1 | grep "qa")
 fi
 export ELASTIC_BEANSTALK_ENV="quiet-goblin-"$ENV_TAG
