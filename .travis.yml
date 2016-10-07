@@ -16,6 +16,8 @@ env:
 before_deploy:
 - . ./deploy_vars.sh
 - DO_DEPLOY=$(if [ $ENV_TAG ]; then echo true; fi)
+- echo $DO_DEPLOY
+- echo $ENG_TAG
 deploy:
 - provider: elasticbeanstalk
   region: us-west-2
