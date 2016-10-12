@@ -91,6 +91,7 @@
     "require"     : false,
     "module"      : true,
     "process"     : true,
-    "__dirname"   : false
+    "__dirname"   : false,
+    "Buffer"      : true
   }        // additional predefined global variables
 }

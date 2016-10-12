@@ -40,8 +40,11 @@ describe("application configuration", () => {
         it("should configure post routes", () => {
             let postsRoutesSpy = sinon.spy();
             initRoutes.__set__("PostsRoutes", postsRoutesSpy);
+            let s3RoutesSpy = sinon.spy();
+            initRoutes.__set__("S3Routes", s3RoutesSpy);
             initRoutes(router);
             postsRoutesSpy.calledWithExactly(router);
+            s3RoutesSpy.calledWithExactly("stepinto-io-static-resources", router);
         });
     });
 
