@@ -7,9 +7,9 @@ let initRoutes = require("./configuration/init-routes");
 
 module.exports = function () {
     require("./configuration/aws-config");
-    let LOGGER = require("./configuration/logger");
+    let LOGGER = require("./configuration/logging/logger")();
 
-    LOGGER.log("info", "Starting application...");
+    LOGGER.info("Starting application...");
 
     let app = express();
     app.use(bodyParser.json());
@@ -19,5 +19,5 @@ module.exports = function () {
 
     let port = appConfig.port || process.env.PORT;
     app.listen(port);
-    LOGGER.log("info", `Goblins listening on ${port}`);
+    LOGGER.info(`Goblins listening on ${port}`);
 };

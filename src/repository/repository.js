@@ -1,7 +1,7 @@
 "use strict";
 
 let AWS = require("aws-sdk");
-let LOGGER = require("../configuration/logger");
+let LOGGER = require("../configuration/logging/logger");
 let bluebird = require("bluebird");
 
 let getParams = function (repository, otherParams) {
@@ -11,62 +11,46 @@ let getParams = function (repository, otherParams) {
     return params;
 };
 
-let writeLog = (repository, message, operation, err) => {
-    let level = err ? "error" : "info";
-    let payload = {
-        repository: repository.constructor.name,
-        table: repository.table,
-        operation: operation
-    };
-    if (err) {
-        payload.error = err;
-    }
-    LOGGER.log(level, message, payload);
-};
-
 class Repository {
 
     constructor() {
         this.docClient = bluebird.promisifyAll(new AWS.DynamoDB.DocumentClient());
         this.table = null;
+        this.LOGGER = LOGGER({ source: "DynamoDB", table: this.table });
     }
 
     get(key) {
         return this.docClient.getAsync(getParams(this, { Key: { id: key }})).then((data) => {
             if (data.Item) {
-                writeLog(this, `Returning item ${key} from table ${this.table}`, "get");
+                this.LOGGER.info(`Returning item from table`);
                 return data.Item;
             } else {
                 let err = { status: 404, cause: "not found" };
-                writeLog(this, `Error getting item ${key} from table ${this.table}`, "get",
-                    JSON.stringify(err, null, 1));
+                this.LOGGER.error("Error getting item", { error: JSON.stringify(err) });
                 return err;
             }
         }).catch((err) => {
-            writeLog(this, `Error getting item ${key} from table ${this.table}`, "get",
-                JSON.stringify(err, null, 1));
+            this.LOGGER.error("Error getting item", { error: JSON.stringify(err) });
             return err;
         });
     }
 
     put(item) {
         return this.docClient.putAsync(getParams(this, { Item: item })).then(() => {
-            writeLog(this, `Added item to table ${this.table}`, "put");
+            this.LOGGER.info("Added item to table");
             return item;
         }).catch((err) => {
-            writeLog(this, `Failed adding item to table ${this.table}`, "put",
-                JSON.stringify(err, null, 1));
+            this.LOGGER.error("Error saving item", { error: JSON.stringify(err) });
             return err;
         });
     }
 
     scan() {
         return this.docClient.scanAsync(getParams(this, {})).then((data) => {
-            writeLog(this, `Returning all items from table ${this.table}`, "scan");
+            this.LOGGER.info("Returning all items from table");
             return data.Items;
         }).catch((err) => {
-            writeLog(this, `Error scanning table ${this.table}`, "scan",
-                JSON.stringify(err, null, 1));
+            this.LOGGER.error("Error scanning database", { error: JSON.stringify(err) });
             return err;
         });
     }

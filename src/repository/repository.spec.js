@@ -10,7 +10,7 @@ let Repository = rewire("./repository");
 describe("Repository", () => {
     let repo;
     let docClientMock;
-    let loggerSpy;
+    let logger;
     let testItem;
 
     beforeEach(() => {
@@ -19,8 +19,11 @@ describe("Repository", () => {
 
         docClientMock = sinon.mock(repo.docClient);
 
-        loggerSpy = sinon.spy();
-        Repository.__set__("LOGGER", { log: loggerSpy });
+        logger = {
+            info: sinon.spy(),
+            error: sinon.spy()
+        };
+        repo.LOGGER = logger;
     });
 
     describe("put", () => {
@@ -51,21 +54,9 @@ describe("Repository", () => {
 
         it("should log an error on error", () => {
             expectation.returns(Promise.reject("error"));
-            return repo.put(testItem).then((err) => {
-                logPayload.error = '"error"';
-                loggerSpy.calledWithExactly("error", "Failed adding item to table null", logPayload)
+            return repo.put(testItem).then(() => {
+                logger.error.calledWithExactly("Error saving item", { error: '"error"' })
                     .should.equal(true);
-                err.should.equal("error");
-            });
-
-        });
-
-        it("should log a success message on success", () => {
-            expectation.returns(Promise.resolve({}));
-            return repo.put(testItem).then((data) => {
-                loggerSpy.calledWithExactly("info", "Added item to table null", logPayload)
-                    .should.equal(true);
-                data.should.equal(testItem);
             });
         });
     });
@@ -97,21 +88,9 @@ describe("Repository", () => {
 
         it("should log an error on error", () => {
             expectation.returns(Promise.reject("error"));
-            return repo.scan().then((err) => {
-                logPayload.error = '"error"';
-                loggerSpy.calledWithExactly("error", "Error scanning table null", logPayload)
+            return repo.scan().then(() => {
+                logger.error.calledWithExactly("Error scanning database", { error: '"error"' })
                     .should.equal(true);
-                err.should.equal("error");
-            });
-        });
-
-        it("should log a success message on success", () => {
-            expectation.returns(Promise.resolve({ Items: ["success"] }));
-            return repo.scan().then((data) => {
-                loggerSpy
-                    .calledWithExactly("info", "Returning all items from table null", logPayload)
-                    .should.equal(true);
-                data.should.eql(["success"]);
             });
         });
     });
@@ -152,21 +131,9 @@ describe("Repository", () => {
 
         it("should log an error on error", () => {
             expectation.returns(Promise.reject("error"));
-            return repo.get("1").then((err) => {
-                logPayload.error = '"error"';
-                loggerSpy
-                    .calledWithExactly("error", "Error getting item 1 from table null", logPayload)
+            return repo.get("1").then(() => {
+                logger.error.calledWithExactly("Error getting item", { error: '"error"' })
                     .should.equal(true);
-                err.should.equal("error");
-            });
-        });
-
-        it("should log a success message on success", () => {
-            expectation.returns(Promise.resolve({ Item: "success" }));
-            return repo.get("1").then((data) => {
-                loggerSpy.calledWithExactly("info", "Returning item 1 from table null", logPayload)
-                    .should.equal(true);
-                data.should.equal("success");
             });
         });
     });

@@ -11,20 +11,13 @@ describe("application configuration", () => {
 
     beforeEach(() => {
         require("./configuration/aws-config");
-        logger = require("./configuration/logger");
-    });
-
-    describe("logging", () => {
-        it("should set logging level to info", () => {
-            logger.should.have.property("level", "info");
-        });
+        logger = require("./configuration/logging/logger");
     });
 
     describe("AWS configuration", () => {
         it("should set configuration parameters on AWS", () => {
             let AWS = require("aws-sdk");
             AWS.config.should.have.property("region", "us-west-2");
-            AWS.config.should.have.property("endpoint", "http://dynamodb.us-west-2.amazonaws.com");
         });
     });
 
@@ -65,7 +58,9 @@ describe("application configuration", () => {
             expressSpy = () => expressAppSpy;
             expressSpy.static = sinon.spy();
             let initRoutesSpy = sinon.spy();
-            let bodyParser = { json: () => "bodyParserJson" };
+            let bodyParser = {
+                json: () => "bodyParserJson"
+            };
 
             server.__set__("express", expressSpy);
             server.__set__("initRoutes", initRoutesSpy);
