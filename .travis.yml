@@ -1,7 +1,5 @@
 language: node_js
-before_install:
-- sudo apt-get -qq update
-- sudo apt-get install -y default-jre
+sudo: false
 node_js:
 - 5.0.0
 addons:
@@ -9,7 +7,10 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
+    - gcc-4.8
     - g++-4.8
+env:
+  - CXX=g++-4.8
 script:
 - npm run ci
 - . ./deploy_vars.sh

@@ -13,8 +13,10 @@
     ],
     "static_source": "../raging-goblin/public",
     "dynamo_tables": {
-      "posts": "ragingGoblin_qa_posts"
-    }
+      "posts": "ragingGoblin_qa_posts",
+      "user": "ragingGoblin_qa_user"
+    },
+    "secret": "QUIETGOBLIN1234RAGINGOBLIN5678"
   },
   "e2e": {
     "port": 7003,
@@ -30,8 +32,10 @@
     ],
     "static_source": "../raging-goblin/public",
     "dynamo_tables": {
-      "posts": "ragingGoblin_qa_posts"
-    }
+      "posts": "ragingGoblin_qa_posts",
+      "user": "ragingGoblin_qa_user"
+    },
+    "secret": "QUIETGOBLIN1234RAGINGOBLIN5678"
   },
   "qa": {
     "log_transports": [
@@ -39,7 +43,8 @@
     ],
     "static_source": "./public",
     "dynamo_tables": {
-      "posts": "ragingGoblin_qa_posts"
+      "posts": "ragingGoblin_qa_posts",
+      "user": "ragingGoblin_qa_user"
     }
   },
   "prod": {
@@ -48,7 +53,9 @@
     ],
     "static_source": "/public",
     "dynamo_tables": {
-      "posts": "ragingGoblin_posts"
-    }
+      "posts": "ragingGoblin_posts",
+      "user": "ragingGoblin_user"
+    },
+    "secret": "QUIETGOBLIN1234RAGINGOBLIN5678"
   }
 }

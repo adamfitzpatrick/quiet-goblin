@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "ci": "./start-ci.sh",
-    "e2e": "cucumber.js ./e2e/features --require ./e2e/support",
+    "e2e": "cucumber.js ./e2e/features --require ./e2e/support --tags ~@ignore",
     "gulp": "gulp",
     "lint": "jshint . --exclude-path=.gitignore --reporter=node_modules/jshint-stylish ",
     "manage": "node ./utility/utilities.js",
@@ -25,9 +25,11 @@
   "homepage": "https://github.com/adamfitzpatrick/quiet-goblin#readme",
   "dependencies": {
     "aws-sdk": "^2.6.2",
+    "bcrypt": "^0.8.7",
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
+    "jsonwebtoken": "^7.1.9",
     "mkdirp": "^0.5.1",
     "multer": "^1.2.0",
     "request": "^2.75.0",

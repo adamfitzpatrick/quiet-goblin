@@ -15,7 +15,7 @@ describe("Repository", () => {
 
     beforeEach(() => {
         testItem = { id: "test_item" };
-        repo = new Repository();
+        repo = new Repository("table");
 
         docClientMock = sinon.mock(repo.docClient);
 
@@ -28,18 +28,12 @@ describe("Repository", () => {
 
     describe("put", () => {
         let params;
-        let logPayload;
         let expectation;
 
         beforeEach(() => {
             params = {
-                TableName: null,
+                TableName: "table",
                 Item: testItem
-            };
-            logPayload = {
-                repository: "Repository",
-                table: null,
-                operation: "put"
             };
             expectation = docClientMock.expects("putAsync").once().withExactArgs(params);
         });
@@ -55,7 +49,49 @@ describe("Repository", () => {
         it("should log an error on error", () => {
             expectation.returns(Promise.reject("error"));
             return repo.put(testItem).then(() => {
-                logger.error.calledWithExactly("Error saving item", { error: '"error"' })
+                return chai.assert.fail();
+            }).catch(() => {
+                return logger.error.calledWithExactly("Error saving item", { error: '"error"' })
+                    .should.equal(true);
+            });
+        });
+    });
+
+    describe("putUnique", () => {
+        let params;
+        let putExpect;
+        let getExpect;
+
+        beforeEach(() => {
+            params = {
+                TableName: "table",
+                Item: testItem
+            };
+            putExpect = docClientMock.expects("putAsync").once().withExactArgs(params);
+            getExpect = docClientMock.expects("getAsync").once()
+                .withExactArgs({
+                    TableName: "table",
+                    Key: { id: "test_item" }
+                });
+        });
+
+        it("should call put on client if id is not a duplicate", () => {
+            getExpect.returns(Promise.reject({}));
+            putExpect.returns(Promise.resolve({}));
+            return repo.putUnique(testItem).then((post) => {
+                docClientMock.verify();
+                post.should.eql(testItem);
+            });
+        });
+
+        it("should log an error if the id is a duplicate", () => {
+            getExpect.returns(Promise.resolve({ Item: { id: "1" }}));
+            putExpect.returns(Promise.resolve({}));
+            return repo.putUnique(testItem).then(() => {
+                chai.assert.fail();
+            }).catch(() => {
+                let err = { error: "object must be unique by id" };
+                return logger.error.calledWithExactly("Item already exists", err)
                     .should.equal(true);
             });
         });
@@ -64,16 +100,10 @@ describe("Repository", () => {
     describe("scan", () => {
         let expectation;
         let params;
-        let logPayload;
 
         beforeEach(() => {
             params = {
-                TableName: null
-            };
-            logPayload = {
-                repository: "Repository",
-                table: null,
-                operation: "scan"
+                TableName: "table"
             };
             expectation = docClientMock.expects("scanAsync").once().withExactArgs(params);
         });
@@ -82,14 +112,17 @@ describe("Repository", () => {
             expectation.returns(Promise.resolve({ Items: [testItem] }));
             return repo.scan().then((data) => {
                 docClientMock.verify();
-                data.should.eql([testItem]);
+                return data.should.eql([testItem]);
             });
         });
 
         it("should log an error on error", () => {
             expectation.returns(Promise.reject("error"));
             return repo.scan().then(() => {
-                logger.error.calledWithExactly("Error scanning database", { error: '"error"' })
+                return chai.assert.fail();
+            }).catch(() => {
+                return logger.error
+                    .calledWithExactly("Error scanning database", { error: '"error"' })
                     .should.equal(true);
             });
         });
@@ -98,17 +131,11 @@ describe("Repository", () => {
     describe("get", () => {
         let expectation;
         let params;
-        let logPayload;
 
         beforeEach(() => {
             params = {
-                TableName: null,
+                TableName: "table",
                 Key: { id: "1" }
-            };
-            logPayload = {
-                repository: "Repository",
-                table: null,
-                operation: "get"
             };
             expectation = docClientMock.expects("getAsync").once().withExactArgs(params);
         });
@@ -117,22 +144,26 @@ describe("Repository", () => {
             expectation.returns(Promise.resolve({ Item: testItem }));
             return repo.get("1").then((data) => {
                 docClientMock.verify();
-                data.should.eql(testItem);
+                return data.should.eql(testItem);
             });
         });
 
-        it("should return 404 if the item was not found", () => {
+        it("should return an error if the item was not found", () => {
             expectation.returns(Promise.resolve({}));
-            return repo.get("1").then((data) => {
+            return repo.get("1").then(() => {
+                return chai.assert.fail();
+            }).catch(err => {
                 docClientMock.verify();
-                data.should.eql({ status: 404, cause: "not found" });
+                return err.message.should.eql("not found");
             });
         });
 
         it("should log an error on error", () => {
             expectation.returns(Promise.reject("error"));
             return repo.get("1").then(() => {
-                logger.error.calledWithExactly("Error getting item", { error: '"error"' })
+                return chai.assert.fail();
+            }).catch(() => {
+                return logger.error.calledWithExactly("Error getting item", { error: '"error"' })
                     .should.equal(true);
             });
         });

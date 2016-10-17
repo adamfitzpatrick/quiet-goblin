@@ -35,9 +35,13 @@ describe("application configuration", () => {
             initRoutes.__set__("PostsRoutes", postsRoutesSpy);
             let s3RoutesSpy = sinon.spy();
             initRoutes.__set__("S3Routes", s3RoutesSpy);
+            let authRoutesSpy = sinon.spy();
+            initRoutes.__set__("AuthRoutes", authRoutesSpy);
             initRoutes(router);
-            postsRoutesSpy.calledWithExactly(router);
-            s3RoutesSpy.calledWithExactly("stepinto-io-static-resources", router);
+            postsRoutesSpy.calledWithExactly(router).should.equal(true);
+            s3RoutesSpy.calledWithExactly("stepinto-io-static-resources", router)
+                .should.equal(true);
+            authRoutesSpy.calledWithExactly(router).should.equal(true);
         });
     });
 

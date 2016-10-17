@@ -19,7 +19,7 @@ function test() {
         .pipe(plumber())
         .pipe(spawnMocha({
             reporter: CI ? "spec" : "nyan",
-            istanbul: true
+            istanbul: { x: "**/*.spec.js" }
         }));
 }
 

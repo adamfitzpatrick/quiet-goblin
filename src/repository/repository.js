@@ -6,16 +6,14 @@ let bluebird = require("bluebird");
 
 let getParams = function (repository, otherParams) {
     let params = { TableName: repository.table };
-    Object.getOwnPropertyNames(otherParams)
-        .forEach(paramName => params[paramName] = otherParams[paramName]);
-    return params;
+    return Object.assign(params, otherParams);
 };
 
 class Repository {
 
-    constructor() {
+    constructor(tableName) {
         this.docClient = bluebird.promisifyAll(new AWS.DynamoDB.DocumentClient());
-        this.table = null;
+        this.table = tableName;
         this.LOGGER = LOGGER({ source: "DynamoDB", table: this.table });
     }
 
@@ -25,13 +23,12 @@ class Repository {
                 this.LOGGER.info(`Returning item from table`);
                 return data.Item;
             } else {
-                let err = { status: 404, cause: "not found" };
-                this.LOGGER.error("Error getting item", { error: JSON.stringify(err) });
-                return err;
+                this.LOGGER.error("Error getting item", { error: "not found" });
+                throw new Error("not found");
             }
-        }).catch((err) => {
+        }, (err) => {
             this.LOGGER.error("Error getting item", { error: JSON.stringify(err) });
-            return err;
+            throw new Error(JSON.stringify(err));
         });
     }
 
@@ -41,7 +38,17 @@ class Repository {
             return item;
         }).catch((err) => {
             this.LOGGER.error("Error saving item", { error: JSON.stringify(err) });
-            return err;
+            throw err;
+        });
+    }
+
+    putUnique(item) {
+        return this.get(item.id).then(() => {
+            let err = "object must be unique by id";
+            this.LOGGER.error("Item already exists", { error: err });
+            throw new Error(err);
+        }, () => {
+            return this.put(item);
         });
     }
 
@@ -51,7 +58,7 @@ class Repository {
             return data.Items;
         }).catch((err) => {
             this.LOGGER.error("Error scanning database", { error: JSON.stringify(err) });
-            return err;
+            throw err;
         });
     }
 }
