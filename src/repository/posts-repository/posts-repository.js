@@ -1,6 +1,6 @@
 "use strict";
 
-let Repository = require("../repository");
+let Repository = require("../../common/dynamodb-repo/dynamodb-repo");
 let TABLE_NAME = require("../../configuration/app-config").dynamo_tables.posts;
 
 class PostsRepository extends Repository {
