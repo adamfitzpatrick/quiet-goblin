@@ -21,7 +21,8 @@ describe("DynamoDBRepository", () => {
 
         logger = {
             info: sinon.spy(),
-            error: sinon.spy()
+            error: sinon.spy(),
+            warn: sinon.spy()
         };
         repo.LOGGER = logger;
     });
@@ -46,13 +47,27 @@ describe("DynamoDBRepository", () => {
             });
         });
 
-        it("should return an error if the item was not found", () => {
+        it("should return an error if the required item was not found", () => {
             expectation.returns(Promise.resolve({}));
             return repo.get("1").then(() => {
                 return chai.assert.fail();
             }).catch(err => {
                 docClientMock.verify();
+                logger.error
+                    .calledWithExactly("item not found", { id: "1", error: "not found" })
+                    .should.equal(true);
                 return err.message.should.eql("not found");
+            });
+        });
+
+        it("should return log a warning if the optional item was not found", () => {
+            expectation.returns(Promise.resolve({}));
+            return repo.get("1", true).then(() => {
+                return chai.assert.fail();
+            }, () => {
+                logger.warn
+                    .calledWithExactly("item not found", { id: "1", error: "not found" })
+                    .should.equal(true);
             });
         });
 

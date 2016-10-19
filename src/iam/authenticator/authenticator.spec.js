@@ -138,11 +138,15 @@ describe("Authenticator", () => {
     });
 
     describe("deverifyUser", () => {
-        beforeEach(() => { authenticator.activeTokens = ["a.b.c"]; });
+        beforeEach(() => {
+            authenticator.activeTokens = ["a.b.c"];
+        });
 
         it("should remove user token from list of active tokens", () => {
-            authenticator.deverifyUser("a.b.c");
+            jwtMock.expects("decode").withExactArgs("a.b.c").returns({ username: "username" });
+            authenticator.deverifyUser("a.b.c").should.eql({ username: "username" });
             authenticator.activeTokens.should.eql([]);
+            jwtMock.verify();
         });
 
         it("should not attempt to remove a token that doesn't exist", () => {

@@ -29,12 +29,18 @@ let iamDriver = {
         return request.post("/add-user").send({ username: username, password: password });
     },
     login: (username, password) => {
-        return request.post("/").send({ username: username, password: password }).then(response => {
+        let supertestPromise = request.post("/").send({ username: username, password: password });
+        supertestPromise.then(response => {
             if (response.body.token) { supportData.token = response.body.token; }
-            return response;
         });
+        return supertestPromise;
     },
     logout: () => { return request.post("/logout").send({ token: supportData.token }); },
+    changePassword: (username, oldPassword, newPassword) => {
+        return request.post("/change-password")
+            .set("x-access-token", supportData.token)
+            .send({ username: username, oldPassword: oldPassword, newPassword: newPassword });
+    },
     postRequest: postRequest,
     baseRequest: baseRequest,
     cleanDynamoDbUserTable: () => {

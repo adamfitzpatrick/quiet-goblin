@@ -59,7 +59,13 @@ class Authenticator {
 
     deverifyUser(token) {
         let index = this.activeTokens.indexOf(token);
-        if (index > -1) { this.activeTokens.splice(index, 1); }
+        if (index > -1) {
+            this.activeTokens.splice(index, 1);
+            let tokenPayload = jwt.decode(token);
+            this.LOGGER.info("user logged out", { username: tokenPayload.username });
+            return tokenPayload;
+        }
+        this.LOGGER.warn("invalid token", { token: token });
     }
 }
 

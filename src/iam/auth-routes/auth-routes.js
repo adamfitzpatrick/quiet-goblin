@@ -41,8 +41,11 @@ class AuthRoutes {
     }
 
     logout(request, response) {
-        _this.authenticator.deverifyUser(request.headers["x-access-token"]);
-        return response.status(200).json("user is logged out");
+        let tokenPayload = _this.authenticator.deverifyUser(request.headers["x-access-token"]);
+        if (tokenPayload) {
+            return response.status(200).json({ username: tokenPayload.username });
+        }
+        return response.status(400).json("invalid token");
     }
 
     addRoutes() {

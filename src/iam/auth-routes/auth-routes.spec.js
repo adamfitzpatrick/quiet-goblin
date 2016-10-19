@@ -112,11 +112,20 @@ describe("AuthRoutes", () => {
 
     describe("logout", () => {
         it("should log the user out", () => {
-            authenticatorMock.expects("deverifyUser").withExactArgs("a.b.c");
+            authenticatorMock.expects("deverifyUser").withExactArgs("a.b.c")
+                .returns({ username: "username" });
             let request = { headers: { "x-access-token": "a.b.c" }};
             authRoutes.logout(request, response);
             authenticatorMock.verify();
             return response.statusCode.should.eql(200);
+        });
+
+        it("should return 400 code if user is not logged in", () => {
+            authenticatorMock.expects("deverifyUser").withExactArgs("a.b.c");
+            let request = { headers: { "x-access-token": "a.b.c" }};
+            authRoutes.logout(request, response);
+            authenticatorMock.verify();
+            return response.statusCode.should.eql(400);
         });
     });
 });

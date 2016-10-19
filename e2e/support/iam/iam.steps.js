@@ -28,7 +28,9 @@ function IAM() {
 
     this.Given(/^I am logged in under the name '([^\s]+)' with password '([^\s]+)'$/,
         (username, password) => {
-        return driver.login(username, password);
+        return driver.login(username, password).expect(200).then(response => {
+            driver.supportData.token = response.body.token;
+        });
     });
 
     this.Then(/^I create a new account under the name '([^\s]+)' with password '([^\s]+)'$/,
@@ -61,11 +63,11 @@ function IAM() {
     });
 
     this.Then(/^I can post to the secure endpoint at '(.+)'$/, (endpoint) => {
-        return driver.baseRequest(endpoint).expect(200);
+        return driver.baseRequest.post(endpoint).expect(200);
     });
 
     this.Then(/^I cannot post to the secure endpoint at '(.+)'$/, (endpoint) => {
-        return driver.baseRequest(endpoint).expect(403);
+        return driver.baseRequest.post(endpoint).expect(403);
     });
 
     this.Then(/^I can no longer post to the secure endpoint at '(.+)'$/, (endpoint) => {
@@ -74,6 +76,11 @@ function IAM() {
 
     this.Then(/^I log out of my account$/, () => {
         return driver.logout().expect(200);
+    });
+
+    this.Then(/^I change the password for '([^\s]+)' from '([^\s]+)' to '([^\s]+)'$/,
+        (username, oldPassword, newPassword) => {
+        return driver.changePassword(username, oldPassword, newPassword).expect(200);
     });
 
     this.After(() => {

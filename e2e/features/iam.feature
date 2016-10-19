@@ -26,7 +26,6 @@ Feature: Identity and Access Management
     When I attempt to log in under the name 'newuser' with password 'wrongpassword'
     Then I will not have an access token
 
-  @ignore
   Scenario: Access a secure API endpoint
     Given I have created an account under the name 'newuser' with password 'password'
     And I am logged in under the name 'newuser' with password 'password'
@@ -38,7 +37,14 @@ Feature: Identity and Access Management
     And I am logged in under the name 'newuser' with password 'password'
     Then I cannot post to the secure endpoint at '/posts'
 
-  @ignore
+  Scenario: Change account password
+    Given I have created an account under the name 'newuser' with password 'password'
+    And I am logged in under the name 'newuser' with password 'password'
+    When I change the password for 'newuser' from 'password' to 'newpassword'
+    And I log out of my account
+    And I log in under the name 'newuser' with password 'newpassword'
+    Then I will have an access token
+
   Scenario: Log out from a user account
     Given I have created an account under the name 'newuser' with password 'password'
     And I am logged in under the name 'newuser' with password 'password'
