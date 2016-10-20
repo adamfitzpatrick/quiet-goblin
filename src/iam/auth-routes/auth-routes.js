@@ -6,6 +6,7 @@ let Authenticator = require("../authenticator/authenticator");
 let User = require("../user/user");
 let httpStatusMatcher = require("../../common/http-status-matcher/http-status-matcher");
 let SecureRouter = require("../secure-router/secure-router");
+let permissions = require("../permissions/permissions");
 
 let _this;
 
@@ -25,6 +26,7 @@ class AuthRoutes {
             .then(token => {
                 return response.json({ token: token });
             }, err => {
+                err = err.message || err;
                 return response.status(httpStatusMatcher(err)).json(err);
             });
     }
@@ -53,7 +55,7 @@ class AuthRoutes {
     addRoutes() {
         this.router.post("/", this.getToken, { secure: false });
         this.router.post("/add-user", this.addUser, { secure: false });
-        this.router.post("/logout", this.logout, { permissions: ["baseline_access"] });
+        this.router.post("/logout", this.logout, { permissions: permissions.user_self });
     }
 }
 

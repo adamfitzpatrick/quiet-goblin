@@ -2,6 +2,7 @@
 
 const statusMap = {
     "username already exists": 400,
+    "Error: ValidationException": 400,
     "invalid password": 401,
     "not found": 404,
     "unknown error": 500
