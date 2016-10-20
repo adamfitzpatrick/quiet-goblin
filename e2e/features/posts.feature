@@ -5,6 +5,8 @@ Feature: Posts
   I should be able to update an existing post
 
   Scenario: View posts
+    Given I have created an account under the name 'newuser' with password 'password'
+    And I am logged in under the name 'newuser' with password 'password'
     Then I want to retrieve a listing of all posts
 
   Scenario: Save a post

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+npm run keygen
 npm run test
 if [ $? -ne 0 ]; then
   exit 1

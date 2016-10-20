@@ -5,6 +5,7 @@ let express = require("express");
 let Authenticator = require("../authenticator/authenticator");
 let User = require("../user/user");
 let httpStatusMatcher = require("../../common/http-status-matcher/http-status-matcher");
+let SecureRouter = require("../secure-router/secure-router");
 
 let _this;
 
@@ -14,6 +15,7 @@ class AuthRoutes {
         _this = this;
         this.application = application;
         this.router = express.Router();
+        this.router = new SecureRouter(application, "/auth");
         this.authenticator = new Authenticator();
         this.addRoutes();
     }
@@ -49,10 +51,9 @@ class AuthRoutes {
     }
 
     addRoutes() {
-        this.router.post("/", this.getToken);
-        this.router.post("/add-user", this.addUser);
-        this.router.post("/logout", this.logout);
-        this.application.use("/auth", this.router);
+        this.router.post("/", this.getToken, { secure: false });
+        this.router.post("/add-user", this.addUser, { secure: false });
+        this.router.post("/logout", this.logout, { permissions: ["baseline_access"] });
     }
 }
 

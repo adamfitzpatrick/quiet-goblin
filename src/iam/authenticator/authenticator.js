@@ -1,6 +1,7 @@
 "use strict";
 
-let secret = require("../../configuration/app-config").secret;
+let fs = require("fs");
+let secret = fs.readFileSync(require("../../configuration/app-config").secret);
 let DynamoDBRepository = require("../../common/dynamodb-repo/dynamodb-repo");
 let tableName = require("../../configuration/app-config").dynamo_tables.user;
 let bluebird = require("bluebird");
@@ -36,6 +37,7 @@ class Authenticator {
     }
 
     addUser(user) {
+        user.permissions = ["baseline_access", "add_comment"];
         return this.generateHash(user.password).then(hashedPassword => {
             user.password = hashedPassword;
             return this.userRepository.putUnique(user).catch(err => {

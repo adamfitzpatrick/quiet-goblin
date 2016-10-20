@@ -30,7 +30,7 @@ describe("Authenticator", () => {
             id: "1",
             username: "username",
             password: "password",
-            permissions: ["permission"]
+            permissions: ["baseline_access", "add_comment"]
         };
     });
 

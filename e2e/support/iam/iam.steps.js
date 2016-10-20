@@ -14,8 +14,9 @@ function IAM() {
 
     this.Given(/^I am not currently logged in$/, () => {
         if (driver.supportData.token) {
+            let token = driver.supportData.token;
             delete driver.supportData.token;
-            return driver.logout().expect(200);
+            return driver.logout().set("x-access-token", token).expect(200);
         }
     });
 
@@ -62,16 +63,22 @@ function IAM() {
         });
     });
 
-    this.Then(/^I can post to the secure endpoint at '(.+)'$/, (endpoint) => {
-        return driver.baseRequest.post(endpoint).expect(200);
+    this.Then(/^I can ((?:post to)|(?:get from)) the secure endpoint at '(.+)'$/,
+        (method, endpoint) => {
+        if (method === "post to") { return driver.baseRequest.post(endpoint).expect(200); }
+        return driver.baseRequest.get(endpoint).expect(200);
     });
 
-    this.Then(/^I cannot post to the secure endpoint at '(.+)'$/, (endpoint) => {
-        return driver.baseRequest.post(endpoint).expect(403);
+    this.Then(/^I cannot ((?:post to)|(?:get from)) the secure endpoint at '(.+)'$/,
+        (method, endpoint) => {
+            if (method === "post to") { return driver.baseRequest.post(endpoint).expect(403); }
+            return driver.baseRequest.get(endpoint).expect(403);
     });
 
-    this.Then(/^I can no longer post to the secure endpoint at '(.+)'$/, (endpoint) => {
-        return driver.baseRequest.post(endpoint).expect(401);
+    this.Then(/^I can no longer ((?:post to)|(?:get from)) the secure endpoint at '(.+)'$/,
+        (method, endpoint) => {
+            if (method === "post to") { return driver.baseRequest.post(endpoint).expect(401); }
+            return driver.baseRequest.get(endpoint).expect(401);
     });
 
     this.Then(/^I log out of my account$/, () => {

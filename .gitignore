@@ -11,3 +11,4 @@ reporting
 !.elasticbeanstalk/*.global.yml
 utility/db-utilities/backup/
 dynamoDB
+token-rsa.key

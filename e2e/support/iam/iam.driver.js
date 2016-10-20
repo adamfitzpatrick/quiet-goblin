@@ -35,7 +35,7 @@ let iamDriver = {
         });
         return supertestPromise;
     },
-    logout: () => { return request.post("/logout").send({ token: supportData.token }); },
+    logout: () => { return request.post("/logout").set("x-access-token", supportData.token); },
     changePassword: (username, oldPassword, newPassword) => {
         return request.post("/change-password")
             .set("x-access-token", supportData.token)

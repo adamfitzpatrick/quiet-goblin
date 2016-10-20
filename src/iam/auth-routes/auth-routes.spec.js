@@ -13,17 +13,12 @@ let User = require("../user/user");
 describe("AuthRoutes", () => {
     let authRoutes;
     let application;
-    let router;
-    let routerMock;
     let authenticatorMock;
     let response;
 
     beforeEach(() => {
         application = express();
         authRoutes = new AuthRoutes(application);
-        router = express.Router();
-        routerMock = sinon.mock(router);
-        AuthRoutes.__set__("express", { Router: () => router });
         authenticatorMock = sinon.mock(authRoutes.authenticator);
         let Response = function () {
             this.status = (code) => {
@@ -33,14 +28,6 @@ describe("AuthRoutes", () => {
             this.json = (value) => this.value = value;
         };
         response = new Response();
-    });
-
-    it("should set required routes", () => {
-        routerMock.expects("post").withExactArgs("/", authRoutes.getToken);
-        routerMock.expects("post").withExactArgs("/add-user", authRoutes.addUser);
-        routerMock.expects("post").withExactArgs("/logout", authRoutes.logout);
-        authRoutes = new AuthRoutes(application);
-        routerMock.verify();
     });
 
     describe("getToken", () => {

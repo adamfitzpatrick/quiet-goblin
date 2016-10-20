@@ -16,7 +16,7 @@
       "posts": "ragingGoblin_qa_posts",
       "user": "ragingGoblin_qa_user"
     },
-    "secret": "QUIETGOBLIN1234RAGINGOBLIN5678"
+    "secret": "./token-rsa.key"
   },
   "e2e": {
     "port": 7003,
@@ -35,7 +35,7 @@
       "posts": "ragingGoblin_qa_posts",
       "user": "ragingGoblin_qa_user"
     },
-    "secret": "QUIETGOBLIN1234RAGINGOBLIN5678"
+    "secret": "./token-rsa.key"
   },
   "qa": {
     "log_transports": [
@@ -56,6 +56,6 @@
       "posts": "ragingGoblin_posts",
       "user": "ragingGoblin_user"
     },
-    "secret": "QUIETGOBLIN1234RAGINGOBLIN5678"
+    "secret": "./token-rsa.key"
   }
 }

@@ -7,9 +7,10 @@
     "ci": "./start-ci.sh",
     "e2e": "cucumber.js ./e2e/features --require ./e2e/support --tags ~@ignore",
     "gulp": "gulp",
+    "keygen": "openssl genrsa -out token-rsa.key 1024",
     "lint": "jshint . --exclude-path=.gitignore --reporter=node_modules/jshint-stylish ",
     "manage": "node ./utility/utilities.js",
-    "start": "node app.js",
+    "start": "npm run keygen && node app.js",
     "tdd": "gulp tdd",
     "test": "gulp test"
   },
