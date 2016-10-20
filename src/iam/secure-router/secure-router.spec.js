@@ -33,15 +33,15 @@ describe("SecureRouter", () => {
 
         beforeEach(() => {
             handler = "handler";
-            routerMock.expects("get").withExactArgs("/route", handler);
+            routerMock.expects("get").withExactArgs("/route/:param", handler);
         });
 
         it("should make a route secure by default and configure route handler", () => {
-            secureRouter.get("/route", handler, { permissions: ["perm"] });
+            secureRouter.get("/route/:param", handler, { permissions: ["perm"] });
             routerMock.verify();
-            secureRouter.routeDefinitions.should.have.property("/route");
-            secureRouter.routeDefinitions["/route"].should.eql({
-                routeString: "/route",
+            secureRouter.routeDefinitions.should.have.property("GET_/route/[^/]+$");
+            secureRouter.routeDefinitions["GET_/route/[^/]+$"].should.eql({
+                routeString: "/route/:param",
                 handler: "handler",
                 permissions: ["perm"],
                 secure: true
@@ -49,10 +49,10 @@ describe("SecureRouter", () => {
         });
 
         it("should make a route open only when specifically requested", () => {
-            secureRouter.get("/route", handler, { secure: false });
+            secureRouter.get("/route/:param", handler, { secure: false });
             routerMock.verify();
-            secureRouter.routeDefinitions["/route"].should.eql({
-                routeString: "/route",
+            secureRouter.routeDefinitions["GET_/route/[^/]+$"].should.eql({
+                routeString: "/route/:param",
                 handler: "handler",
                 permissions: void 0,
                 secure: false
@@ -60,9 +60,9 @@ describe("SecureRouter", () => {
         });
 
         it("should convert string permission to an array", () => {
-            secureRouter.get("/route", handler, { permissions: "perm" });
+            secureRouter.get("/route/:param", handler, { permissions: "perm" });
             routerMock.verify();
-            secureRouter.routeDefinitions["/route"].permissions.should.eql(["perm"]);
+            secureRouter.routeDefinitions["GET_/route/[^/]+$"].permissions.should.eql(["perm"]);
         });
     });
 
@@ -71,6 +71,7 @@ describe("SecureRouter", () => {
             let handler = "handler";
             routerMock.expects("post").withExactArgs("/route", handler);
             secureRouter.post("/route", handler, { permissions: ["perm"] });
+            secureRouter.routeDefinitions.should.have.property("POST_/route$");
             routerMock.verify();
         });
     });

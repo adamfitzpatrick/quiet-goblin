@@ -6,12 +6,12 @@ let sinon = require("sinon");
 let rewire = require("rewire");
 
 let PostsRoutes = rewire("./posts-routes");
-let Post = rewire("../../models/post/post");
+let Post = rewire("../../posts/post/post");
 Post.__set__("uuid", { v4: () => "1" });
 PostsRoutes.__set__("Post", Post);
 
 describe("PostsRoutes", () => {
-    let router;
+    let application;
     let postsRoutes;
     let repositoryMock;
     let testPost;
@@ -19,28 +19,25 @@ describe("PostsRoutes", () => {
     let response;
 
     beforeEach(() => {
+        application = { use: sinon.spy() };
         testPost = { title: "Test Post", date: new Date() };
-        router = {
-            get: sinon.spy(),
-            post: sinon.spy()
-        };
-        postsRoutes = new PostsRoutes(router);
+        postsRoutes = new PostsRoutes(application);
         repositoryMock = sinon.mock(postsRoutes.repository);
-        response = { json: (data) => data };
+        response = {
+            status: (code) => {
+                response.statusCode = code;
+                return response;
+            },
+            send: (data) => response.data = data,
+            json: (data) => response.data = data
+        };
     });
 
     describe("constructor", () => {
         it("should properly configure the repo", () => {
             postsRoutes.should.have.property("repository");
-            postsRoutes.repository.constructor.should.have.property("name", "PostsRepository");
-        });
-
-        it("should add endpoints to router", () => {
-            router.get.calledWithExactly("/posts", postsRoutes.getPosts).should.equal(true);
-            router.post.calledWithExactly("/posts", postsRoutes.addPost).should.equal(true);
-            router.post.calledWithExactly("/posts/:id", postsRoutes.updatePost)
-                .should.equal(true);
-            router.get.calledWithExactly("/posts/:id", postsRoutes.getPost).should.equal(true);
+            postsRoutes.repository.should.have.property("table", "ragingGoblin_posts");
+            application.use.calledWithExactly("/posts", sinon.match.func).should.equal(true);
         });
     });
 

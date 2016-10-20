@@ -15,13 +15,12 @@ class Gatekeeper {
     }
 
     process(request, response, next) {
-        let url = request.url;
         let token = request.headers["x-access-token"];
-        if (url.length > 1 && url[url.length - 1] === "/") { url = url.slice(0, url.length -1); }
-        let route = this.routeDefinitions[url];
+        let route = this.determineRoute(request);
         if (!route) {
-            this.LOGGER.warn("no specified route", { baseUrl: request.baseUrl, url: url });
-            return response.status(404).send(`cannot ${request.method} ${request.baseUrl}${url}`);
+            this.LOGGER.warn("no specified route", { baseUrl: request.baseUrl, url: request.url });
+            return response.status(404)
+                .send(`cannot ${request.method} ${request.baseUrl}${request.url}`);
         } else if (!route.secure) {
             return next();
         } else if (!token) {
@@ -33,13 +32,14 @@ class Gatekeeper {
     }
 
     processToken(request, response, next, token) {
+        let permissions = this.determineRoute(request).permissions;
         return jwt.verifyAsync(token, secret).then(tokenPayload => {
-            if (this.checkPermission(request, tokenPayload)) { return next(); }
+            if (this.checkPermission(permissions, tokenPayload)) { return next(); }
             let logPayload = {
                 path: request.path,
                 username: tokenPayload.username,
                 permissions: tokenPayload.permissions,
-                requiredPermissions: this.routeDefinitions[request.url].permissions
+                requiredPermissions: permissions
             };
             this.LOGGER.warn("attempted access without permission", logPayload);
             return response.status(403).json({ error: "missing required permission" });
@@ -50,11 +50,22 @@ class Gatekeeper {
         });
     }
 
-    checkPermission(request, tokenPayload) {
-        let requiredPermissions = this.routeDefinitions[request.url].permissions;
+    checkPermission(requiredPermissions, tokenPayload) {
         return tokenPayload.permissions.some(permission => {
             return requiredPermissions.indexOf(permission) > -1;
         });
+    }
+
+    determineRoute(request) {
+        let url = request.url;
+        if (url.length > 1 && url[url.length - 1] === "/") { url = url.slice(0, url.length -1); }
+        return Object.keys(this.routeDefinitions).reduce((routeDef, route) => {
+            let regexp = new RegExp(route);
+            if (regexp.test(`${request.method}_${url}`)) {
+                routeDef = this.routeDefinitions[route];
+            }
+            return routeDef;
+        }, void 0);
     }
 }
 

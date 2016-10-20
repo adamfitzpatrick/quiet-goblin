@@ -1,6 +1,6 @@
 "use strict";
 
-let PostsRoutes = require("../routes/posts-routes/posts-routes");
+let PostsRoutes = require("../posts/posts-routes/posts-routes");
 let S3Routes = require("../routes/s3-routes/s3-routes");
 let AuthRoutes = require("../iam/auth-routes/auth-routes");
 

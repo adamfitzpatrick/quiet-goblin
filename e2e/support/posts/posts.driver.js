@@ -4,11 +4,7 @@ let appConfig = require("../../../app-config.json").e2e;
 let baseUrl = `http://localhost:${appConfig.port}/posts`;
 let request = require("supertest")(baseUrl);
 
-let supportData = {
-    posts: [],
-    lastPost: () => supportData.posts[supportData.posts.length - 1],
-    previousPost: () => supportData.posts[supportData.posts.length -2]
-};
+let supportData = require("../support-data");
 
 let postDriver = {
     supportData: supportData,
@@ -28,6 +24,7 @@ let postDriver = {
     savePost: () => request.post("/").send(supportData.lastPost()),
     getLastPost: () => request.get(`/${supportData.lastPost().id}`),
     getAll: () => request.get("/"),
+    getOne: (id) => request.get(`/${id}`),
     post: (id) => request.post(`/${id}`)
 };
 

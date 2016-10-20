@@ -1,6 +1,8 @@
 "use strict";
 
 let bluebird = require("bluebird");
+let bcrypt = require("bcrypt");
+
 let appConfig = require("../../../app-config.json").e2e;
 let baseUrl = `http://localhost:${appConfig.port}`;
 let request = require("supertest")(`${baseUrl}/auth`);
@@ -14,18 +16,29 @@ AWS.config.update({
 let docClient = bluebird.promisifyAll(new AWS.DynamoDB.DocumentClient());
 let userTable = appConfig.dynamo_tables.user;
 
-let supportData = {
-    users: []
-};
+let supportData = require("../support-data");
 
-let addUser = (username) => {
+let addUserToSupportData = (username) => {
     if (supportData.users.indexOf(username) === -1) { supportData.users.push(username); }
 };
 
+function putUser(username, password, permissions) {
+    let passwordHash = bcrypt.hashSync(password, 12);
+    let user = {
+        id: username,
+        username: username,
+        password: passwordHash,
+        permissions: permissions
+    };
+    return docClient.putAsync({ TableName: "ragingGoblin_qa_user", Item: user });
+}
+
+
 let iamDriver = {
     supportData: supportData,
+    createAccountWithoutApp: putUser,
     createAccount: (username, password) => {
-        addUser(username);
+        addUserToSupportData(username);
         return request.post("/add-user").send({ username: username, password: password });
     },
     login: (username, password) => {

@@ -20,23 +20,29 @@ class SecureRouter {
     }
 
     get(routeString, handler, options) {
-        this.configureRoutingData(routeString, handler, options);
+        this.configureRoutingData("GET", routeString, handler, options);
         this.router.get(routeString, handler);
     }
 
     post(routeString, handler, options) {
-        this.configureRoutingData(routeString, handler, options);
+        this.configureRoutingData("POST", routeString, handler, options);
         this.router.post(routeString, handler);
     }
 
-    configureRoutingData(routeString, handler, options) {
+    configureRoutingData(method, routeString, handler, options) {
         parseOptions(options);
-        this.routeDefinitions[routeString] = {
+        this.routeDefinitions[`${method}_${this.replaceRouteStringParams(routeString)}`] = {
             routeString: routeString,
             handler: handler,
             permissions: options.permissions,
             secure: options.secure
         };
+    }
+
+    replaceRouteStringParams(routeString) {
+        let str = routeString.replace(/:[^/]+/, "[^/]+");
+        str += "$";
+        return str;
     }
 }
 

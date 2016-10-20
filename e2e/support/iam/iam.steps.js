@@ -1,10 +1,10 @@
 "use strict";
 
-let driver = require("./iam.driver");
-
 let chai = require("chai");
 chai.use(require("chai-as-promised"));
 chai.should();
+
+let driver = require("./iam.driver");
 
 function IAM() {
     this.Before(() => {
@@ -25,6 +25,11 @@ function IAM() {
         return driver.createAccount(username, password).expect(200).then(response => {
             driver.supportData.token = response.body.token;
         });
+    });
+
+    this.Given(/^I have created an account with name '([^\s]+)', password '([^\s]+)' and permission '([^\s]+)'$/, // jshint ignore:line
+        (username, password, permission) => {
+        return driver.createAccountWithoutApp(username, password, [permission]);
     });
 
     this.Given(/^I am logged in under the name '([^\s]+)' with password '([^\s]+)'$/,
