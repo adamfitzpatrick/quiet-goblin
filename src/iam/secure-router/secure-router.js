@@ -19,21 +19,26 @@ class SecureRouter {
         application.use(routeString, this.router);
     }
 
-    get(routeString, handler, options) {
-        this.configureRoutingData("GET", routeString, handler, options);
-        this.router.get(routeString, handler);
+    get(routeString, handlers, options) {
+        this.configureRoutingData("GET", routeString, handlers, options);
+        this.router.get(routeString, handlers);
     }
 
-    post(routeString, handler, options) {
-        this.configureRoutingData("POST", routeString, handler, options);
-        this.router.post(routeString, handler);
+    post(routeString, handlers, options) {
+        this.configureRoutingData("POST", routeString, handlers, options);
+        this.router.post(routeString, handlers);
     }
 
-    configureRoutingData(method, routeString, handler, options) {
+    delete(routeString, handlers, options) {
+        this.configureRoutingData("DELETE", routeString, handlers, options);
+        this.router.delete(routeString, handlers);
+    }
+
+    configureRoutingData(method, routeString, handlers, options) {
         parseOptions(options);
         this.routeDefinitions[`${method}_${this.replaceRouteStringParams(routeString)}`] = {
             routeString: routeString,
-            handler: handler,
+            handler: handlers,
             permissions: options.permissions,
             secure: options.secure
         };

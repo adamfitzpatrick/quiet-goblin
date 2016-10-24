@@ -3,7 +3,10 @@
 let express = require("express");
 let bodyParser = require("body-parser");
 let appConfig = require("./configuration/app-config");
-let initRoutes = require("./configuration/init-routes");
+
+let AuthRoutes = require("./iam/auth-routes/auth-routes");
+let PostsRoutes = require("./posts/posts-routes/posts-routes");
+let S3Routes = require("./s3/s3-routes/s3-routes");
 
 module.exports = function () {
     require("./configuration/aws-config");
@@ -15,9 +18,12 @@ module.exports = function () {
     app.use(bodyParser.json());
     app.use(express.static(appConfig.static_source));
 
-    initRoutes(app);
+    new PostsRoutes(app);
+    new AuthRoutes(app);
+    new S3Routes("stepinto-io-static-resources", app);
 
     let port = appConfig.port || process.env.PORT;
     app.listen(port);
+
     LOGGER.info(`Goblins listening on ${port}`);
 };

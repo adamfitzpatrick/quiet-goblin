@@ -6,10 +6,12 @@ let permissions = {
     delete_post: "delete_post",
     read_comment: "read_comment",
     read_post: "read_post",
+    "read_stepinto-io-static-resources": "read_stepinto-io-static-resources",
     user_admin: "user_admin",
     user_self: "user_self",
     write_comment: "write_comment",
-    write_post: "write_post"
+    write_post: "write_post",
+    "write_stepinto-io-static-resources": "write_stepinto-io-static-resources"
 };
 
 let PERMISSION_LEVELS = [];

@@ -42,32 +42,32 @@ describe("Gatekeeper", () => {
     });
 
     it("should reject access to an unregistered endpoint", () => {
-        request.url = "/unregistered/param";
+        request.path = "/unregistered/param";
         gatekeeper.process(request, response, next);
         next.called.should.equal(false);
         response.statusCode.should.equal(404);
     });
 
     it("should provide access to an open endpoint without requiring a token", () => {
-        request.url = "/open";
+        request.path = "/open";
         gatekeeper.process(request, response, next);
         next.called.should.equal(true);
     });
 
     it("should remove a trailing slash from request url", () => {
-        request.url = "/open/";
+        request.path = "/open/";
         gatekeeper.process(request, response, next);
         next.called.should.equal(true);
     });
 
     it("should not remove the slash if it is the only character", () => {
-        request.url = "/";
+        request.path = "/";
         gatekeeper.process(request, response, next);
         next.called.should.equal(true);
     });
 
     it("should reject access to secure endpoint when token is not provided", () => {
-        request.url = "/secure/param";
+        request.path = "/secure/param";
         gatekeeper.process(request, response, next);
         next.called.should.equal(false);
     });
@@ -77,7 +77,7 @@ describe("Gatekeeper", () => {
         jwtMock.expects("verifyAsync").withExactArgs(token, "secret")
             .returns(Promise.reject({ name: 'TokenExpiredError' }));
         request.headers = { "x-access-token": token };
-        request.url = "/secure/param";
+        request.path = "/secure/param";
         return gatekeeper.process(request, response, next).then(() => {
             next.called.should.equal(false);
             jwtMock.verify();
@@ -90,7 +90,7 @@ describe("Gatekeeper", () => {
         jwtMock.expects("verifyAsync").withExactArgs(token, "secret")
             .returns(Promise.resolve({ permissions: ["none"] }));
         request.headers = { "x-access-token": token };
-        request.url = "/secure/param";
+        request.path = "/secure/param";
         return gatekeeper.process(request, response, next).then(() => {
             next.called.should.equal(false);
             jwtMock.verify();
@@ -103,7 +103,7 @@ describe("Gatekeeper", () => {
         jwtMock.expects("verifyAsync").withExactArgs(token, "secret")
             .returns(Promise.resolve({ permissions: ["access_secure"] }));
         request.headers = { "x-access-token": token };
-        request.url = "/secure/param";
+        request.path = "/secure/param";
         return gatekeeper.process(request, response, next).then(() => {
             next.called.should.equal(true);
             return jwtMock.verify();

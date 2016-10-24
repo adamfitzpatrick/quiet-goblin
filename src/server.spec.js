@@ -5,6 +5,7 @@ chai.use(require("chai-as-promised"));
 chai.should();
 let sinon = require("sinon");
 let rewire = require("rewire");
+let express = require("express");
 
 describe("application configuration", () => {
     let logger;
@@ -21,33 +22,8 @@ describe("application configuration", () => {
         });
     });
 
-    describe("initRoutes", () => {
-        let initRoutes;
-        let router;
-
-        beforeEach(() => {
-            initRoutes = rewire("./configuration/init-routes");
-            router = "router";
-        });
-
-        it("should configure post routes", () => {
-            let postsRoutesSpy = sinon.spy();
-            initRoutes.__set__("PostsRoutes", postsRoutesSpy);
-            let s3RoutesSpy = sinon.spy();
-            initRoutes.__set__("S3Routes", s3RoutesSpy);
-            let authRoutesSpy = sinon.spy();
-            initRoutes.__set__("AuthRoutes", authRoutesSpy);
-            initRoutes(router);
-            postsRoutesSpy.calledWithExactly(router).should.equal(true);
-            s3RoutesSpy.calledWithExactly("stepinto-io-static-resources", router)
-                .should.equal(true);
-            authRoutesSpy.calledWithExactly(router).should.equal(true);
-        });
-    });
-
     describe("server", () => {
-        let expressSpy;
-        let expressAppSpy;
+        let applicationMock;
         let server;
         let port;
 
@@ -55,33 +31,27 @@ describe("application configuration", () => {
             port = 8080;
             process.env.PORT = port;
             server = rewire("./server");
-            expressAppSpy = {
-                use: sinon.spy(),
-                listen: sinon.spy()
-            };
-            expressSpy = () => expressAppSpy;
-            expressSpy.static = sinon.spy();
-            let initRoutesSpy = sinon.spy();
             let bodyParser = {
                 json: () => "bodyParserJson"
             };
-
-            server.__set__("express", expressSpy);
-            server.__set__("initRoutes", initRoutesSpy);
+            let application = express();
+            applicationMock = sinon.mock(application);
+            express = () => application;
+            express.static = sinon.stub().returns("static");
+            server.__set__("express", express);
             server.__set__("bodyParser", bodyParser);
+        });
+
+        it("should configure the application and start it", () => {
+            applicationMock.expects("use").withExactArgs("bodyParserJson");
+            applicationMock.expects("use").withExactArgs("static");
+            applicationMock.expects("use").withExactArgs("/posts", sinon.match.func);
+            applicationMock.expects("use").withExactArgs("/auth", sinon.match.func);
+            applicationMock.expects("use")
+                .withExactArgs("/stepinto-io-static-resources", sinon.match.func);
+            applicationMock.expects("listen").withExactArgs(port.toString());
             server();
-        });
-
-        it("should use bodyParser json", () => {
-            expressAppSpy.use.calledWithExactly("bodyParserJson").should.equal(true);
-        });
-
-        it("should setup static source", () => {
-            expressSpy.static.calledWithExactly("/public");
-        });
-
-        it("should listen on process.env.PORT if database is available", () => {
-            expressAppSpy.listen.calledWithExactly(port.toString()).should.equal(true);
+            applicationMock.verify();
         });
     });
 });

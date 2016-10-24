@@ -3,23 +3,23 @@
 let chai = require("chai");
 chai.use(require("chai-as-promised"));
 chai.should();
+
 let sinon = require("sinon");
 let rewire = require("rewire");
-
 let express = require("express");
+
 let S3Routes = rewire("./s3-routes");
 
 describe("S3Routes", () => {
-    let router;
-    let routerMock;
+    let application;
     let s3RepoMock;
     let s3Routes;
     let Response;
     let response;
 
     beforeEach(() => {
-        router = express();
-        s3Routes = new S3Routes("bucket", router);
+        application = express();
+        s3Routes = new S3Routes("bucket", application);
         s3RepoMock = sinon.mock(s3Routes.repository);
         Response = function () {
             let _this = this;
@@ -38,17 +38,6 @@ describe("S3Routes", () => {
 
     it("should set the target s3 bucket", () => {
         s3Routes.repository.bucket.should.equal("bucket");
-    });
-
-    it("should add appropriate endpoints to router", () => {
-        routerMock = sinon.mock(router);
-
-        routerMock.expects("get").once().withExactArgs("/bucket", s3Routes.getBucket);
-        routerMock.expects("post").once()
-            .withExactArgs("/bucket", sinon.match.func, s3Routes.putObject);
-
-        s3Routes = new S3Routes("bucket", router);
-        routerMock.verify();
     });
 
     describe("getBucket", () => {

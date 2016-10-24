@@ -1,19 +1,23 @@
 "use strict";
 
-let S3Repository = require("../../repository/s3-repository/s3-repository");
 let multer = require("multer");
 let storage = multer.memoryStorage();
 let upload = require("multer")({ storage: storage });
+
+let SecureRouter = require("../../iam/secure-router/secure-router");
+let S3Repository = require("../s3-repository/s3-repository");
+let permissions = require("../../iam/permissions/permissions");
 
 let _this;
 
 class S3Routes {
 
-    constructor(bucket, router) {
+    constructor(bucket, application) {
         _this = this;
         this.bucket = bucket;
         this.repository = new S3Repository(bucket);
-        this.addRoutes(router);
+        this.router = new SecureRouter(application, `/${this.bucket}`);
+        this.addRoutes();
     }
 
     getBucket(request, response) {
@@ -38,10 +42,12 @@ class S3Routes {
         return _this.repository.deleteObject(request.query.key).then(data => response.json(data));
     }
 
-    addRoutes(router) {
-        router.get(`/${this.bucket}`, this.getBucket);
-        router.post(`/${this.bucket}`, upload.single('upload'), this.putObject);
-        router.delete(`/${this.bucket}`, this.deleteObject);
+    addRoutes() {
+        this.router.get("/", this.getBucket, { secure: false });
+        this.router.post("/", [upload.single('upload'), this.putObject],
+            { permissions: permissions[`write_${this.bucket}`] });
+        this.router.delete("/", this.deleteObject,
+            { permissions: permissions[`write_${this.bucket}`] });
     }
 }
 

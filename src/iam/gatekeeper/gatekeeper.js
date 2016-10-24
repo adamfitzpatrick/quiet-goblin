@@ -24,7 +24,7 @@ class Gatekeeper {
         } else if (!route.secure) {
             return next();
         } else if (!token) {
-            this.LOGGER.warn("attempted access without token", { path: request.path });
+            this.LOGGER.warn("attempted access without token", { path: `${request.baseUrl}${request.path}` });
             return response.status(403).json({ error: "missing access token" });
         } else {
             return this.processToken(request, response, next, token);
@@ -57,11 +57,13 @@ class Gatekeeper {
     }
 
     determineRoute(request) {
-        let url = request.url;
-        if (url.length > 1 && url[url.length - 1] === "/") { url = url.slice(0, url.length -1); }
+        let path = request.path;
+        if (path.length > 1 && path[path.length - 1] === "/") {
+            path = path.slice(0, path.length -1);
+        }
         return Object.keys(this.routeDefinitions).reduce((routeDef, route) => {
             let regexp = new RegExp(route);
-            if (regexp.test(`${request.method}_${url}`)) {
+            if (regexp.test(`${request.method}_${path}`)) {
                 routeDef = this.routeDefinitions[route];
             }
             return routeDef;

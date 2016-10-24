@@ -2,29 +2,17 @@
 
 let path = require("path");
 let fs = require("fs");
-let appConfig = require("../../app-config.json").e2e;
-let baseUrl = `http://localhost:${appConfig.port}/stepinto-io-static-resources`;
+let baseUrl = `http://localhost:7003/stepinto-io-static-resources`;
 let request = require("supertest")(baseUrl);
 
-function StepIntoIOStaticResources() {
-    let testItemsAdded = [];
+let bucket = "stepinto-io-static-resources";
+let driver = require("./s3.driver");
 
-    let addTestItem = (testResource, testFolder) => {
-        let key = `${testFolder}/${testResource}`;
-        if (testItemsAdded.indexOf(key) === -1) {
-            testItemsAdded.push(key);
-        }
-    };
+function StepIntoIOStaticResources() {
 
     this.Then(/^I ((?:can save)|(?:have saved)) ([^\s]+) to the ([^\s]+) folder$/,
         (flexibleWording, testResource, testFolder) => {
-        addTestItem(testResource, testFolder);
-        return request.post("/")
-            .attach("upload", path.join(__dirname, "testresource"))
-            .field({ key: `${testFolder}/${testResource}` })
-            .expect(response => {
-                return response.body.should.have.property("ETag");
-            });
+        return driver.saveToFolder(bucket, testResource, testFolder);
     });
 
     this.Then(/^I can verify that ([^\s]+) exists in ([^\s]+) folder$/,
@@ -32,7 +20,7 @@ function StepIntoIOStaticResources() {
         return request.get("/").query({ key: `${testFolder}/${testResource}`}).expect(200);
     });
 
-    this.Then(/^I can verify the contents of ([^\s]+) in ([^\s]+) folder$/,
+    this.Then(/^I can verify the contents of ([^\s]+) in ([^\s]+) folder/,
         (testResource, testFolder) => {
         let content = fs.readFileSync(path.join(__dirname, testResource), "utf8");
         return request.get("/").query({ key: `${testFolder}/${testResource}`}).
@@ -43,14 +31,16 @@ function StepIntoIOStaticResources() {
         return request.get("/").expect(200);
     });
 
-    this.Then(/^I can get a list of resources in the ([^\s]+) folder$/, (testFolder) => {
+    this.Then(/^I can get a list of resources in the ([^\s]+) folder/, (testFolder) => {
         return request.get("/").query({ folder: testFolder }).expect(response => {
             response.body.should.have.length.above(0);
         });
     });
 
     this.Then(/^I can delete ([^\s]+) in ([^\s]+) folder$/, (testResource, testFolder) => {
-        return request.delete("/").query({ key: `${testFolder}/${testResource}` }).expect(200);
+        return request.delete("/").set("x-access-token", driver.supportData.token)
+            .query({ key: `${testFolder}/${testResource}` })
+            .expect(200);
     });
 
     this.Then(/^I can verify that ([^\s]+) does not exist in ([^\s]+) folder$/,
@@ -63,8 +53,8 @@ function StepIntoIOStaticResources() {
 
     this.After(() => {
         let promises = [];
-        testItemsAdded.forEach(item => {
-            promises.push(request.delete("/").query({ key: item }));
+        driver.supportData.testResources.forEach(item => {
+            promises.push(driver.deleteObject(bucket, item));
         });
         return Promise.all(promises);
     });

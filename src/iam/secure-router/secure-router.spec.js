@@ -75,4 +75,14 @@ describe("SecureRouter", () => {
             routerMock.verify();
         });
     });
+
+    describe("delete", () => {
+        it("should add delete route to router", () => {
+            let handler = "handler";
+            routerMock.expects("delete").withExactArgs("/route", handler);
+            secureRouter.delete("/route", handler, { permissions: ["perm"] });
+            secureRouter.routeDefinitions.should.have.property("DELETE_/route$");
+            routerMock.verify();
+        });
+    });
 });
