@@ -18,7 +18,7 @@ class DynamoDBRepository {
     }
 
     get(key, optional) {
-        return this.docClient.getAsync(getParams(this, { Key: { id: key }})).then((data) => {
+         return this.docClient.getAsync(getParams(this, { Key: { id: key }})).then((data) => {
             if (data.Item) {
                 this.LOGGER.info(`Returning item from table`, { id: key});
                 return data.Item;

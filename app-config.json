@@ -14,7 +14,8 @@
     "static_source": "../raging-goblin/public",
     "dynamo_tables": {
       "posts": "ragingGoblin_qa_posts",
-      "user": "ragingGoblin_qa_user"
+      "user": "ragingGoblin_qa_user",
+      "comment": "ragingGoblin_qa_comment"
     },
     "secret": "./token-rsa.key"
   },
@@ -33,7 +34,8 @@
     "static_source": "../raging-goblin/public",
     "dynamo_tables": {
       "posts": "ragingGoblin_qa_posts",
-      "user": "ragingGoblin_qa_user"
+      "user": "ragingGoblin_qa_user",
+      "comment": "ragingGoblin_qa_comment"
     },
     "secret": "./token-rsa.key"
   },
@@ -44,7 +46,8 @@
     "static_source": "./public",
     "dynamo_tables": {
       "posts": "ragingGoblin_qa_posts",
-      "user": "ragingGoblin_qa_user"
+      "user": "ragingGoblin_qa_user",
+      "comment": "ragingGoblin_qa_comment"
     }
   },
   "prod": {
@@ -54,7 +57,8 @@
     "static_source": "/public",
     "dynamo_tables": {
       "posts": "ragingGoblin_posts",
-      "user": "ragingGoblin_user"
+      "user": "ragingGoblin_user",
+      "comment": "ragingGoblin_comment"
     },
     "secret": "./token-rsa.key"
   }

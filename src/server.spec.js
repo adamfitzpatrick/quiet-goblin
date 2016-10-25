@@ -45,8 +45,9 @@ describe("application configuration", () => {
         it("should configure the application and start it", () => {
             applicationMock.expects("use").withExactArgs("bodyParserJson");
             applicationMock.expects("use").withExactArgs("static");
-            applicationMock.expects("use").withExactArgs("/posts", sinon.match.func);
             applicationMock.expects("use").withExactArgs("/auth", sinon.match.func);
+            applicationMock.expects("use").withExactArgs("/posts", sinon.match.func);
+            applicationMock.expects("use").withExactArgs("/comment", sinon.match.func);
             applicationMock.expects("use")
                 .withExactArgs("/stepinto-io-static-resources", sinon.match.func);
             applicationMock.expects("listen").withExactArgs(port.toString());

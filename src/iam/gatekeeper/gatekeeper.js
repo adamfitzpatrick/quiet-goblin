@@ -24,7 +24,8 @@ class Gatekeeper {
         } else if (!route.secure) {
             return next();
         } else if (!token) {
-            this.LOGGER.warn("attempted access without token", { path: `${request.baseUrl}${request.path}` });
+            this.LOGGER.warn("attempted access without token",
+                { path: `${request.baseUrl}${request.path}` });
             return response.status(403).json({ error: "missing access token" });
         } else {
             return this.processToken(request, response, next, token);
