@@ -28,4 +28,7 @@ PERMISSION_LEVELS.push(Object.keys(permissions).map(key => permissions[key]));
 
 permissions.level = (level) => PERMISSION_LEVELS[level];
 
+// Added separately because this privilege must be explicitely granted
+permissions.deploy_ui = "deploy_ui";
+
 module.exports = permissions;

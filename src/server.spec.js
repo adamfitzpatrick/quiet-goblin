@@ -46,6 +46,7 @@ describe("application configuration", () => {
             applicationMock.expects("use").withExactArgs("bodyParserJson");
             applicationMock.expects("use").withExactArgs("static");
             applicationMock.expects("use").withExactArgs("/auth", sinon.match.func);
+            applicationMock.expects("use").withExactArgs("/admin", sinon.match.func);
             applicationMock.expects("use").withExactArgs("/posts", sinon.match.func);
             applicationMock.expects("use").withExactArgs("/comment", sinon.match.func);
             applicationMock.expects("use")

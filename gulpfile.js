@@ -9,7 +9,7 @@ const jshint = require("gulp-jshint");
 const stylish = require("jshint-stylish");
 
 function lint() {
-    return gulp.src(["**/*.js", "!node_modules/**/*.js", "!reporting/**/*.js"])
+    return gulp.src(["**/*.js", "!node_modules/**/*.js", "!reporting/**/*.js", "!public/**/*.js"])
         .pipe(jshint())
         .pipe(jshint.reporter(stylish));
 }
