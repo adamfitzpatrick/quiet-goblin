@@ -1,7 +1,9 @@
 "use strict";
 
 let express = require("express");
+let helmet = require("helmet");
 let bodyParser = require("body-parser");
+
 let appConfig = require("./configuration/app-config");
 
 let AuthRoutes = require("./iam/auth-routes/auth-routes");
@@ -17,6 +19,7 @@ module.exports = function () {
     LOGGER.info("Starting application...");
 
     let app = express();
+    app.use(helmet());
     app.use(bodyParser.json());
     app.use(express.static(appConfig.static_source));
 
