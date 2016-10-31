@@ -48,18 +48,19 @@
       "posts": "ragingGoblin_qa_posts",
       "user": "ragingGoblin_qa_user",
       "comment": "ragingGoblin_qa_comment"
-    }
+    },
+    "secret": "./token-rsa.key"
   },
   "prod": {
     "log_transports": [
       { "type": "File", "params": { "filename": "./logs/quiet-goblin.log", "maxsize": 1000000 }}
     ],
-    "static_source": "/public",
+    "static_source": "./public",
     "dynamo_tables": {
       "posts": "ragingGoblin_posts",
       "user": "ragingGoblin_user",
       "comment": "ragingGoblin_comment"
     },
-    "secret": "./token-rsa.key"
+    "secret": "/var/app/current/token-rsa.key"
   }
 }

@@ -4,7 +4,7 @@ let fs = require("fs");
 let bluebird = require("bluebird");
 let jwt = bluebird.promisifyAll(require("jsonwebtoken"));
 
-let secret = fs.readFileSync(require("../../configuration/app-config").secret);
+let secret = "foo"; //fs.readFileSync(require("../../configuration/app-config").secret);
 let LOGGER = require("../../configuration/logging/logger");
 
 class Gatekeeper {
