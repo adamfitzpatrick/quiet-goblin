@@ -61,6 +61,6 @@
       "user": "ragingGoblin_user",
       "comment": "ragingGoblin_comment"
     },
-    "secret": "/var/app/current/token-rsa.key"
+    "secret": "./token-rsa.key"
   }
 }
