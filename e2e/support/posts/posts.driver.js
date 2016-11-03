@@ -3,7 +3,6 @@
 let appConfig = require("../../../app-config.json").e2e;
 let baseUrl = `http://localhost:${appConfig.port}/posts`;
 let request = require("supertest")(baseUrl);
-
 let supportData = require("../support-data");
 
 let postDriver = {

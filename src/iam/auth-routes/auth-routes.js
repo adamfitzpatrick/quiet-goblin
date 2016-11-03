@@ -22,7 +22,7 @@ class AuthRoutes {
     }
 
     getToken(request, response) {
-        return _this.authenticator.verifyUser(request.body.username, request.body.password)
+        return this.authenticator.verifyUser(request.body.username, request.body.password)
             .then(token => {
                 return response.json({ token: token });
             }, err => {
@@ -33,9 +33,9 @@ class AuthRoutes {
 
     addUser(request, response) {
         let user = new User(request.body);
-        return _this.authenticator.addUser(user)
+        return this.authenticator.addUser(user)
             .then(user => {
-                return _this.authenticator.verifyUser(user.username, request.body.password)
+                return this.authenticator.verifyUser(user.username, request.body.password)
                     .then(token => {
                         return response.json({ token: token });
                     });
@@ -44,8 +44,24 @@ class AuthRoutes {
             });
     }
 
+    changePassword(request, response) {
+        let token = request.headers["x-access-token"];
+        let body = request.body;
+        if (!body || !body.oldPassword || !body.newPassword) {
+            return response.status(400).json("missing password parameter(s)");
+        }
+        return this.authenticator.changePassword(token, body.oldPassword, body.newPassword)
+            .then(() => {
+                let result = { username: body.username, result: "password changed" };
+                return response.status(200).json(result);
+            })
+            .catch((err) => {
+                return response.status(httpStatusMatcher(err)).json(err);
+            });
+    }
+
     logout(request, response) {
-        let tokenPayload = _this.authenticator.deverifyUser(request.headers["x-access-token"]);
+        let tokenPayload = this.authenticator.deverifyUser(request.headers["x-access-token"]);
         if (tokenPayload) {
             return response.status(200).json({ username: tokenPayload.username });
         }
@@ -53,9 +69,11 @@ class AuthRoutes {
     }
 
     addRoutes() {
-        this.router.post("/", this.getToken, { secure: false });
-        this.router.post("/add-user", this.addUser, { secure: false });
-        this.router.post("/logout", this.logout, { permissions: permissions.user_self });
+        this.router.post("/", this.getToken.bind(this), { secure: false });
+        this.router.post("/add-user", this.addUser.bind(this), { secure: false });
+        this.router.post("/change-password", this.changePassword.bind(this),
+            { permissions: permissions.user_self });
+        this.router.post("/logout", this.logout.bind(this), { permissions: permissions.user_self });
     }
 }
 

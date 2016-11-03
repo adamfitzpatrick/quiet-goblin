@@ -52,7 +52,7 @@ let iamDriver = {
     changePassword: (username, oldPassword, newPassword) => {
         return request.post("/change-password")
             .set("x-access-token", supportData.token)
-            .send({ username: username, oldPassword: oldPassword, newPassword: newPassword });
+            .send({ oldPassword: oldPassword, newPassword: newPassword });
     },
     postRequest: postRequest,
     baseRequest: baseRequest,
