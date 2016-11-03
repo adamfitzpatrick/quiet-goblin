@@ -1,13 +1,11 @@
 "use strict";
 
 let fs = require("fs");
-let path = require("path");
 let bluebird = require("bluebird");
 let jwt = bluebird.promisifyAll(require("jsonwebtoken"));
 let bcrypt = bluebird.promisifyAll(require("bcrypt"));
 
-let secretPath = require("../../configuration/app-config").secret;
-let secret = "foo"; //fs.readFileSync(secretPath);
+let secret = fs.readFileSync(require("../../configuration/app-config").secret);
 
 let DynamoDBRepository = require("../../common/dynamodb-repo/dynamodb-repo");
 let tableName = require("../../configuration/app-config").dynamo_tables.user;
