@@ -7,6 +7,16 @@ chai.should();
 let driver = require("./posts.driver");
 
 function Posts() {
+    this.Before(() => {
+        let post = {
+            id: "123456789",
+            date: new Date().toISOString(),
+            title: "Preliminary test post"
+        };
+        driver.supportData.posts.push(post);
+        return driver.directAdd(post);
+    });
+
     this.Given(/^I have a post I wish to save$/, () => {
         driver.addTestPost();
     });
@@ -55,6 +65,14 @@ function Posts() {
                 response.body.id.should.equal(driver.supportData.previousPost().id);
                 return response.body.title.should.equal(driver.supportData.lastPost().title);
             });
+    });
+
+    this.After(() => {
+        let promises = [];
+        while (driver.supportData.posts.length) {
+            promises.push(driver.directRemove(driver.supportData.posts.pop()));
+        }
+        return Promise.all(promises);
     });
 }
 

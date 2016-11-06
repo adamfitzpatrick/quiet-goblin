@@ -9,7 +9,6 @@ let bucket = "stepinto-io-static-resources";
 let driver = require("./s3.driver");
 
 function StepIntoIOStaticResources() {
-
     this.Then(/^I ((?:can save)|(?:have saved)) ([^\s]+) to the ([^\s]+) folder$/,
         (flexibleWording, testResource, testFolder) => {
         return driver.saveToFolder(bucket, testResource, testFolder);
@@ -24,7 +23,12 @@ function StepIntoIOStaticResources() {
         (testResource, testFolder) => {
         let content = fs.readFileSync(path.join(__dirname, testResource), "utf8");
         return request.get("/").query({ key: `${testFolder}/${testResource}`}).
-            expect(response => response.body.should.equal(content));
+            expect(response => {
+                if (response.body.data) {
+                    return Buffer.from(response.body.data).toString().should.equal(content);
+                }
+                return response.body.should.equal(content);
+        });
     });
 
     this.Then(/^I can get a list of all static resources$/, () => {

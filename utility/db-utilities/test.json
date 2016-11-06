@@ -1,0 +1,44 @@
+{
+  "optionsettings": {
+    "aws:elasticbeanstalk:container:nodejs": {
+      "ProxyServer": "nginx",
+      "NodeVersion": "4.4.6",
+      "NodeCommand": "",
+      "GzipCompression": "true"
+    },
+    "aws:elasticbeanstalk:hostmanager": {
+      "LogPublicationControl": "false"
+    },
+    "aws:elasticbeanstalk:application:environment": [
+      "ENV=qa",
+      "RAGING_GOBIN_TAG=0.0.1-qa.5",
+      "EB_INSTANCE_ENV_TAG=qa"
+    ],
+    "aws:elasticbeanstalk:container:nodejs:staticfiles": {
+      "NodeStaticFiles": [
+        ""
+      ]
+    }
+  },
+  "container": {
+    "nodejs_log_dir": "/var/log/nodejs",
+    "app_staging_dir": "/tmp/deployment/application",
+    "nodejs_proxy_port": "8081",
+    "instance_port": "80",
+    "nodejs_download_url": "https://s3-us-west-2.amazonaws.com/elasticbeanstalk-env-resources-us-west-2/stalks/eb_node_js_4.0.1.46.1/lib/64/",
+    "config_staging_dir": "/tmp/deployment/config",
+    "nodejs_install_dir": "/opt/elasticbeanstalk/node-install",
+    "app_user_home": "/tmp",
+    "app_deploy_dir": "/var/app/current",
+    "server_port": "8080",
+    "source_bundle": "/opt/elasticbeanstalk/deploy/appsource/source_bundle",
+    "nodejs_standalone_port": "8080",
+    "app_user": "nodejs",
+    "app_base_dir": "/var/app"
+  },
+  "system": {
+    "LogPublicationControl": "false",
+    "AWSEBAgentId": "",
+    "AWSEBReferrerId": ""
+  }
+}
