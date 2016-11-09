@@ -13,15 +13,15 @@ Feature: Posts
     Then I want to retrieve a single post
 
   Scenario: Save a post
-    Given I have created an account with name 'username', password 'password' and permission 'write_post'
-    And I am logged in under the name 'username' with password 'password'
+    Given I have created an account with name 'newuser', password 'password' and permission 'write_post'
+    And I am logged in under the name 'newuser' with password 'password'
     And I have a post I wish to save
     When I save the post to the database
     Then I can verify the post I just saved
 
   Scenario: Update a post
-    Given I have created an account with name 'username', password 'password' and permission 'write_post'
-    And I am logged in under the name 'username' with password 'password'
+    Given I have created an account with name 'newuser', password 'password' and permission 'write_post'
+    And I am logged in under the name 'newuser' with password 'password'
     And I have a post I wish to save
     When I save the post to the database
     Then I can update the post I just saved

@@ -9,7 +9,7 @@ let driver = require("./iam.driver");
 function IAM() {
     this.Before(() => {
         driver.supportData.users = ["newuser"];
-        driver.cleanDynamoDbUserTable();
+        return driver.cleanDynamoDbUserTable();
     });
 
     this.Given(/^I am not currently logged in$/, () => {
@@ -97,6 +97,7 @@ function IAM() {
 
     this.After(() => {
         delete driver.supportData.token;
+        driver.supportData.users.push("newuser");
         return driver.cleanDynamoDbUserTable();
     });
 }

@@ -11,7 +11,6 @@ AWS.config.update({
 });
 let docClient = bluebird.promisifyAll(new AWS.DynamoDB.DocumentClient());
 let postsTable = appConfig.dynamo_tables.posts;
-
 let supportData = require("../support-data");
 
 let postDriver = {

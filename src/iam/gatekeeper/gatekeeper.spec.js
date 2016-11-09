@@ -109,4 +109,12 @@ describe("Gatekeeper", () => {
             return jwtMock.verify();
         });
     });
+
+    describe("decode", () => {
+        it("should return a payload for the given token", () => {
+            jwtMock.expects("decodeAsync").withExactArgs("a.b.c", "secret")
+                .returns(Promise.resolve({ payload: "payload" }));
+            Gatekeeper.decode("a.b.c").then((data) => data.should.eql({ payload: "payload" }));
+        });
+    });
 });

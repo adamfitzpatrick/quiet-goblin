@@ -36,19 +36,17 @@ describe("Authenticator", () => {
 
     describe("generateHash", () => {
         it("should return a hashed value for plain text string", () => {
-            bcryptMock.expects("hashAsync").once().withExactArgs("password", 12)
-                .returns(Promise.resolve("hashedpassword"));
-            return authenticator.generateHash("password").then((hashed) => {
-                bcryptMock.verify();
-                return hashed.should.equal("hashedpassword");
-            });
+            bcryptMock.expects("hashSync").once().withExactArgs("password", 12)
+                .returns("hashedpassword");
+            authenticator.generateHash("password").should.equal("hashedpassword");
+            bcryptMock.verify();
         });
     });
 
     describe("addUser", () => {
         beforeEach(() => {
-            bcryptMock.expects("hashAsync").once().withExactArgs("password", 12)
-                .returns(Promise.resolve("hashedpassword"));
+            bcryptMock.expects("hashSync").once().withExactArgs("password", 12)
+                .returns("hashedpassword");
         });
 
         it("should add a new user to the database with a hashed password", () => {
@@ -89,12 +87,87 @@ describe("Authenticator", () => {
         });
     });
 
+    describe("changePassword", () => {
+        let updatedUser;
+
+        beforeEach(() => {
+            updatedUser = JSON.parse(JSON.stringify(testUser));
+            updatedUser.password = "newpassword";
+        });
+
+        it("should update the user's password", () => {
+            jwtMock.expects("decode").withExactArgs("a.b.c").returns({ username: "username" });
+            userRepoMock.expects("get").withExactArgs("username")
+                .returns(Promise.resolve(testUser));
+            bcryptMock.expects("compareSync").withExactArgs("oldpassword", "password")
+                .returns(true);
+            bcryptMock.expects("hashSync").withExactArgs("newpassword", 12).returns("newpassword");
+            userRepoMock.expects("put").withExactArgs(updatedUser)
+                .returns(Promise.resolve(updatedUser));
+            return authenticator.changePassword("a.b.c", "oldpassword", "newpassword")
+                .then(() => {
+                    jwtMock.verify();
+                    userRepoMock.verify();
+                    bcryptMock.verify();
+                })
+                .catch(() => {
+                    jwtMock.verify();
+                    userRepoMock.verify();
+                    bcryptMock.verify();
+                    return chai.assert.fail();
+                });
+        });
+
+        it("should throw an error if the token is impropertly formatted", () => {
+            jwtMock.expects("decode").withExactArgs("a.b.c").returns({});
+            (() => authenticator.changePassword("a.b.c", "oldpassword", "newpassword"))
+                .should.throw("invalid access token");
+            jwtMock.verify();
+        });
+
+        it("should throw an error if the user cannot be found", () => {
+            jwtMock.expects("decode").withExactArgs("a.b.c").returns({ username: "username" });
+            userRepoMock.expects("get").withExactArgs("username")
+                .returns(Promise.reject("not found"));
+            return authenticator.changePassword("a.b.c", "oldpassword", "newpassword")
+                .then(() => {
+                    jwtMock.verify();
+                    userRepoMock.verify();
+                    return chai.assert.fail();
+                }).catch((err) => {
+                    jwtMock.verify();
+                    userRepoMock.verify();
+                    return err.message.should.eql("not found");
+                });
+        });
+
+        it("should throw an error if the old password is incorrect", () => {
+            jwtMock.expects("decode").withExactArgs("a.b.c").returns({ username: "username" });
+            userRepoMock.expects("get").withExactArgs("username")
+                .returns(Promise.resolve(testUser));
+            bcryptMock.expects("compareSync").withExactArgs("wrongpassword", "password")
+                .returns(false);
+            return authenticator.changePassword("a.b.c", "wrongpassword", "newpassword")
+                .then(() => {
+                    jwtMock.verify();
+                    userRepoMock.verify();
+                    bcryptMock.verify();
+                    return chai.assert.fail();
+                }).catch((err) => {
+                    jwtMock.verify();
+                    userRepoMock.verify();
+                    bcryptMock.verify();
+                    return err.message.should.eql("invalid password for username");
+                });
+        });
+    });
+
     describe("verifyUser", () => {
         it("should return a token if the provided password matches the user's password", () => {
             userRepoMock.expects("get").withExactArgs("username")
                 .returns(Promise.resolve(testUser));
-            bcryptMock.expects("compareAsync").withExactArgs("password", "password")
-                .returns(Promise.resolve(true));
+            bcryptMock.expects("compareSync").withExactArgs("password", "password")
+                .returns(true);
             jwtMock.expects("sign").withExactArgs(testUser, secret, { expiresIn: 600000 })
                 .returns("a.b.c");
             return authenticator.verifyUser("username", "password").then((token) => {
@@ -109,8 +182,8 @@ describe("Authenticator", () => {
         it("should log an error if the password does not match", () => {
             userRepoMock.expects("get").withExactArgs("username")
                 .returns(Promise.resolve(testUser));
-            bcryptMock.expects("compareAsync").withExactArgs("wrongpassword", "password")
-                .returns(Promise.resolve(false));
+            bcryptMock.expects("compareSync").withExactArgs("wrongpassword", "password")
+                .returns(false);
             loggerMock.expects("error")
                 .withExactArgs("invalid password for username", { username: "username" });
             return authenticator.verifyUser("username", "wrongpassword").then(() => {

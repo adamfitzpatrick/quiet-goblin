@@ -72,4 +72,8 @@ class Gatekeeper {
     }
 }
 
+Gatekeeper.decode = (token) => {
+    return jwt.decodeAsync(token, secret);
+};
+
 module.exports = Gatekeeper;
