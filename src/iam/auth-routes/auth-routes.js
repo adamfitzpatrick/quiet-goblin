@@ -1,7 +1,5 @@
 "use strict";
 
-let express = require("express");
-
 let Authenticator = require("../authenticator/authenticator");
 let User = require("../user/user");
 let httpStatusMatcher = require("../../common/http-status-matcher/http-status-matcher");
@@ -14,8 +12,6 @@ class AuthRoutes {
 
     constructor(application) {
         _this = this;
-        this.application = application;
-        this.router = express.Router();
         this.router = new SecureRouter(application, "/auth");
         this.authenticator = new Authenticator();
         this.addRoutes();

@@ -33,7 +33,6 @@ function putUser(username, password, permissions) {
     return docClient.putAsync({ TableName: "ragingGoblin_qa_user", Item: user });
 }
 
-
 let iamDriver = {
     supportData: supportData,
     createAccountWithoutApp: putUser,
