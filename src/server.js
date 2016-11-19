@@ -5,6 +5,8 @@ let helmet = require("helmet");
 let bodyParser = require("body-parser");
 
 let appConfig = require("./configuration/app-config");
+let CORSFilter = require("./configuration/cors-filter/cors-filter");
+
 let AdminRoutes = require("./admin/admin-routes/admin-routes");
 let AuthRoutes = require("./iam/auth-routes/auth-routes");
 let PostsRoutes = require("./posts/posts-routes/posts-routes");
@@ -21,6 +23,7 @@ module.exports = function () {
     app.use(helmet());
     app.use(bodyParser.json());
     app.use(express.static(appConfig.static_source));
+    app.use(CORSFilter());
 
     new AdminRoutes(app);
     new AuthRoutes(app);
