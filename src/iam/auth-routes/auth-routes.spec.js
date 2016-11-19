@@ -20,14 +20,23 @@ describe("AuthRoutes", () => {
         application = express();
         authRoutes = new AuthRoutes(application);
         authenticatorMock = sinon.mock(authRoutes.authenticator);
-        let Response = function () {
-            this.status = (code) => {
-                this.statusCode = code;
-                return this;
-            };
-            this.json = (value) => this.value = value;
+        response = {
+            cookies: [],
+            status: (code) => {
+                response.statusCode = code;
+                return response;
+            },
+            json: (value) => response.value = value,
+            cookie: (name, value, options) =>  {
+                response.cookies.push({
+                    name: name,
+                    value: value,
+                    options: options
+                });
+                return response;
+            },
+            end: () => {}
         };
-        response = new Response();
     });
 
     describe("getToken", () => {
@@ -44,10 +53,15 @@ describe("AuthRoutes", () => {
 
         it("should return a token for a valid user", () => {
             authenticatorMock.expects("verifyUser").returns(Promise.resolve("a.b.c"));
-            return authRoutes.getToken(request, response).then((data) => {
+            return authRoutes.getToken(request, response).then(() => {
                 authenticatorMock.verify();
-                data.should.have.property("token", "a.b.c");
-                return response.value.should.eql({ token: "a.b.c" });
+                let cookie = response.cookies[0];
+                cookie.name.should.equal("stepinto.io.token");
+                cookie.value.should.equal("a.b.c");
+                return cookie.options.should.eql({
+                    secure: true,
+                    domain: "stepinto.io"
+                });
             });
         });
 

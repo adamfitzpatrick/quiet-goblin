@@ -20,7 +20,8 @@ class AuthRoutes {
     getToken(request, response) {
         return this.authenticator.verifyUser(request.body.username, request.body.password)
             .then(token => {
-                return response.json({ token: token });
+                const cookieOpts = { secure: true, domain: "stepinto.io" };
+                return response.cookie("stepinto.io.token", token, cookieOpts).end();
             }, err => {
                 err = err.message || err;
                 return response.status(httpStatusMatcher(err)).json(err);
