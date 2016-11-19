@@ -36,7 +36,6 @@ Feature: Identity and Access Management
     And I am logged in under the name 'newuser' with password 'password'
     Then I cannot post to the secure endpoint at '/posts'
 
-  @run
   Scenario: Change account password
     Given I have created an account under the name 'newuser' with password 'password'
     And I am logged in under the name 'newuser' with password 'password'
