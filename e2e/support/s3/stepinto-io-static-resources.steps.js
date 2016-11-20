@@ -42,7 +42,7 @@ function StepIntoIOStaticResources() {
     });
 
     this.Then(/^I can delete ([^\s]+) in ([^\s]+) folder$/, (testResource, testFolder) => {
-        return request.delete("/").set("x-access-token", driver.supportData.token)
+        return request.delete("/").set("Authorization", `Bearer ${driver.supportData.token}`)
             .query({ key: `${testFolder}/${testResource}` })
             .expect(200);
     });

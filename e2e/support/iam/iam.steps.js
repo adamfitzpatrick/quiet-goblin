@@ -13,11 +13,7 @@ function IAM() {
     });
 
     this.Given(/^I am not currently logged in$/, () => {
-        if (driver.supportData.token) {
-            let token = driver.supportData.token;
-            delete driver.supportData.token;
-            return driver.logout().set("x-access-token", token).expect(200);
-        }
+        return delete driver.supportData.token;
     });
 
     this.Given(/^I have created an account under the name '([^\s]+)' with password '([^\s]+)'$/,
@@ -86,13 +82,13 @@ function IAM() {
             return driver.baseRequest.get(endpoint).expect(401);
     });
 
-    this.Then(/^I log out of my account$/, () => {
-        return driver.logout().expect(200);
-    });
-
     this.Then(/^I change the password for '([^\s]+)' from '([^\s]+)' to '([^\s]+)'$/,
         (username, oldPassword, newPassword) => {
         return driver.changePassword(username, oldPassword, newPassword).expect(200);
+    });
+
+    this.Then(/^I log out of my account$/, () => {
+        return delete driver.supportData.token;
     });
 
     this.After(() => {

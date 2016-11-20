@@ -15,7 +15,8 @@ class Gatekeeper {
     }
 
     process(request, response, next) {
-        let token = request.headers["x-access-token"];
+        let token = request.headers.Authorization || request.headers.authorization;
+        token = token && token.replace(/^Bearer /, "");
         let route = this.determineRoute(request);
         if (!route) {
             this.LOGGER.warn("no specified route", { baseUrl: request.baseUrl, url: request.url });

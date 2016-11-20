@@ -102,14 +102,18 @@ describe("AuthRoutes", () => {
 
         beforeEach(() => {
             request = {
-                body: { oldPassword: "oldpassword", newPassword: "newpassword" },
-                headers: { "x-access-token": "a.b.c" }
+                body: {
+                    username: "username",
+                    oldPassword: "oldpassword",
+                    newPassword: "newpassword"
+                },
+                headers: { "Authorization": "a.b.c" }
             };
         });
 
         it("should update the user's password", () => {
             authenticatorMock.expects("changePassword")
-                .withExactArgs("a.b.c", "oldpassword", "newpassword")
+                .withExactArgs("username", "oldpassword", "newpassword")
                 .returns(Promise.resolve());
             return authRoutes.changePassword(request, response).then(() => {
                 authenticatorMock.verify();
@@ -119,7 +123,7 @@ describe("AuthRoutes", () => {
 
         it("should return an error status code if the password cannot be changed", () => {
             authenticatorMock.expects("changePassword")
-                .withExactArgs("a.b.c", "oldpassword", "newpassword")
+                .withExactArgs("username", "oldpassword", "newpassword")
                 .returns(Promise.reject({ message: "error" }));
             return authRoutes.changePassword(request, response).then(() => {
                 authenticatorMock.verify();
@@ -131,25 +135,6 @@ describe("AuthRoutes", () => {
             request.body = {};
             authRoutes.changePassword(request, response);
             response.statusCode.should.eql(400);
-        });
-    });
-
-    describe("logout", () => {
-        it("should log the user out", () => {
-            authenticatorMock.expects("deverifyUser").withExactArgs("a.b.c")
-                .returns({ username: "username" });
-            let request = { headers: { "x-access-token": "a.b.c" }};
-            authRoutes.logout(request, response);
-            authenticatorMock.verify();
-            return response.statusCode.should.eql(200);
-        });
-
-        it("should return 400 code if user is not logged in", () => {
-            authenticatorMock.expects("deverifyUser").withExactArgs("a.b.c");
-            let request = { headers: { "x-access-token": "a.b.c" }};
-            authRoutes.logout(request, response);
-            authenticatorMock.verify();
-            return response.statusCode.should.eql(400);
         });
     });
 });

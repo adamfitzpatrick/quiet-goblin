@@ -96,7 +96,6 @@ describe("Authenticator", () => {
         });
 
         it("should update the user's password", () => {
-            jwtMock.expects("decode").withExactArgs("a.b.c").returns({ username: "username" });
             userRepoMock.expects("get").withExactArgs("username")
                 .returns(Promise.resolve(testUser));
             bcryptMock.expects("compareSync").withExactArgs("oldpassword", "password")
@@ -104,57 +103,42 @@ describe("Authenticator", () => {
             bcryptMock.expects("hashSync").withExactArgs("newpassword", 12).returns("newpassword");
             userRepoMock.expects("put").withExactArgs(updatedUser)
                 .returns(Promise.resolve(updatedUser));
-            return authenticator.changePassword("a.b.c", "oldpassword", "newpassword")
+            return authenticator.changePassword("username", "oldpassword", "newpassword")
                 .then(() => {
-                    jwtMock.verify();
                     userRepoMock.verify();
                     bcryptMock.verify();
                 })
                 .catch(() => {
-                    jwtMock.verify();
                     userRepoMock.verify();
                     bcryptMock.verify();
                     return chai.assert.fail();
                 });
         });
 
-        it("should throw an error if the token is impropertly formatted", () => {
-            jwtMock.expects("decode").withExactArgs("a.b.c").returns({});
-            (() => authenticator.changePassword("a.b.c", "oldpassword", "newpassword"))
-                .should.throw("invalid access token");
-            jwtMock.verify();
-        });
-
         it("should throw an error if the user cannot be found", () => {
-            jwtMock.expects("decode").withExactArgs("a.b.c").returns({ username: "username" });
             userRepoMock.expects("get").withExactArgs("username")
                 .returns(Promise.reject("not found"));
-            return authenticator.changePassword("a.b.c", "oldpassword", "newpassword")
+            return authenticator.changePassword("username", "oldpassword", "newpassword")
                 .then(() => {
-                    jwtMock.verify();
                     userRepoMock.verify();
                     return chai.assert.fail();
                 }).catch((err) => {
-                    jwtMock.verify();
                     userRepoMock.verify();
                     return err.message.should.eql("not found");
                 });
         });
 
         it("should throw an error if the old password is incorrect", () => {
-            jwtMock.expects("decode").withExactArgs("a.b.c").returns({ username: "username" });
             userRepoMock.expects("get").withExactArgs("username")
                 .returns(Promise.resolve(testUser));
             bcryptMock.expects("compareSync").withExactArgs("wrongpassword", "password")
                 .returns(false);
-            return authenticator.changePassword("a.b.c", "wrongpassword", "newpassword")
+            return authenticator.changePassword("username", "wrongpassword", "newpassword")
                 .then(() => {
-                    jwtMock.verify();
                     userRepoMock.verify();
                     bcryptMock.verify();
                     return chai.assert.fail();
                 }).catch((err) => {
-                    jwtMock.verify();
                     userRepoMock.verify();
                     bcryptMock.verify();
                     return err.message.should.eql("invalid password for username");
@@ -174,7 +158,6 @@ describe("Authenticator", () => {
                 token.should.equal("a.b.c");
                 userRepoMock.verify();
                 bcryptMock.verify();
-                authenticator.activeTokens.should.eql(["a.b.c"]);
                 return jwtMock.verify();
             });
         });
@@ -192,7 +175,6 @@ describe("Authenticator", () => {
                 userRepoMock.verify();
                 loggerMock.verify();
                 bcryptMock.verify();
-                authenticator.activeTokens.should.eql([]);
                 return err.message.should.equal("invalid password for username");
             });
         });
@@ -207,24 +189,6 @@ describe("Authenticator", () => {
                 loggerMock.verify();
                 return userRepoMock.verify();
             });
-        });
-    });
-
-    describe("deverifyUser", () => {
-        beforeEach(() => {
-            authenticator.activeTokens = ["a.b.c"];
-        });
-
-        it("should remove user token from list of active tokens", () => {
-            jwtMock.expects("decode").withExactArgs("a.b.c").returns({ username: "username" });
-            authenticator.deverifyUser("a.b.c").should.eql({ username: "username" });
-            authenticator.activeTokens.should.eql([]);
-            jwtMock.verify();
-        });
-
-        it("should not attempt to remove a token that doesn't exist", () => {
-            authenticator.deverifyUser("not.a.token");
-            authenticator.activeTokens.should.eql(["a.b.c"]);
         });
     });
 });

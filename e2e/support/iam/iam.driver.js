@@ -47,11 +47,10 @@ let iamDriver = {
         });
         return supertestPromise;
     },
-    logout: () => { return request.post("/logout").set("x-access-token", supportData.token); },
     changePassword: (username, oldPassword, newPassword) => {
         return request.post("/change-password")
-            .set("x-access-token", supportData.token)
-            .send({ oldPassword: oldPassword, newPassword: newPassword });
+            .set("Authorization", `Bearer ${supportData.token}`)
+            .send({ username: username, oldPassword: oldPassword, newPassword: newPassword });
     },
     postRequest: postRequest,
     baseRequest: baseRequest,

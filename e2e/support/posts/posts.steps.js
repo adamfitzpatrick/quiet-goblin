@@ -22,7 +22,7 @@ function Posts() {
     });
 
     this.Then(/^I save the post to the database$/, () => {
-        return driver.savePost().set("x-access-token", driver.supportData.token)
+        return driver.savePost().set("Authorization", `Bearer ${driver.supportData.token}`)
             .expect(response => {
                 response.status.should.equal(200);
                 response.should.have.property("body");
@@ -59,7 +59,7 @@ function Posts() {
         driver.duplicateLastTestPost();
         driver.supportData.lastPost().title = "Updated";
         return driver.post(driver.supportData.previousPost().id)
-            .set("x-access-token", driver.supportData.token)
+            .set("Authorization", `Bearer ${driver.supportData.token}`)
             .send({ title: "Updated"})
             .expect(response => {
                 response.body.id.should.equal(driver.supportData.previousPost().id);

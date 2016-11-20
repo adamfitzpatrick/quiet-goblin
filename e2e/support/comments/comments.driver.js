@@ -18,13 +18,15 @@ let commentsDriver = {
         return request.get(`/${id}`);
     },
     put: (comment) => {
-        return request.post("/").set("x-access-token", supportData.token).send(comment);
+        return request.post("/").set("Authorization", `Bearer ${supportData.token}`).send(comment);
     },
     update: (id, comment) => {
-        return request.post(`/${id}`).set("x-access-token", supportData.token).send(comment);
+        return request.post(`/${id}`)
+            .set("Authorization", `Bearer ${supportData.token}`)
+            .send(comment);
     },
     delete: (id) => {
-        return request.delete(`/${id}`).set("x-access-token", supportData.token);
+        return request.delete(`/${id}`).set("Authorization", `Bearer ${supportData.token}`);
     },
     directPut: (comment) => {
         return docClient.putAsync({ TableName: "ragingGoblin_qa_comment", Item: comment })

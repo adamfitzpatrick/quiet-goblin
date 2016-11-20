@@ -17,7 +17,7 @@ let s3Driver = {
     saveToFolder: (bucket, testResource, testFolder) => {
         supportData.addTestResource(testResource, testFolder);
         return request.post(`/${bucket}`)
-            .set("x-access-token", s3Driver.supportData.token)
+            .set("Authorization", `Bearer ${s3Driver.supportData.token}`)
             .attach("upload", path.join(__dirname, "testresource"))
             .field({ key: `${testFolder}/${testResource}` })
             .expect(response => {

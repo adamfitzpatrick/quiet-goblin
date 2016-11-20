@@ -15,7 +15,7 @@ function Admin() {
 
     this.Then(/^I change the password for '([^\s]+)' to '([^\s]+)'$/, (username, password) => {
         return driver.changePassword(username, password)
-            .set("x-access-token", driver.supportData.token)
+            .set("Authorization", `Bearer ${driver.supportData.token}`)
             .expect(200);
     });
 

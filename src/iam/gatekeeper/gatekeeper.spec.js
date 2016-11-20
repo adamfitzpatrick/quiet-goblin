@@ -76,7 +76,7 @@ describe("Gatekeeper", () => {
         let token = jwt.sign({ permissions: ["access_secure"] }, "secret");
         jwtMock.expects("verifyAsync").withExactArgs(token, "secret")
             .returns(Promise.reject({ name: 'TokenExpiredError' }));
-        request.headers = { "x-access-token": token };
+        request.headers = { "Authorization": token };
         request.path = "/secure/param";
         return gatekeeper.process(request, response, next).then(() => {
             next.called.should.equal(false);
@@ -89,7 +89,7 @@ describe("Gatekeeper", () => {
         let token = jwt.sign({ permissions: ["none"] }, "secret");
         jwtMock.expects("verifyAsync").withExactArgs(token, "secret")
             .returns(Promise.resolve({ permissions: ["none"] }));
-        request.headers = { "x-access-token": token };
+        request.headers = { "Authorization": token };
         request.path = "/secure/param";
         return gatekeeper.process(request, response, next).then(() => {
             next.called.should.equal(false);
@@ -102,7 +102,7 @@ describe("Gatekeeper", () => {
         let token = jwt.sign({ permissions: ["access_secure"] }, "secret");
         jwtMock.expects("verifyAsync").withExactArgs(token, "secret")
             .returns(Promise.resolve({ permissions: ["access_secure"] }));
-        request.headers = { "x-access-token": token };
+        request.headers = { "Authorization": token };
         request.path = "/secure/param";
         return gatekeeper.process(request, response, next).then(() => {
             next.called.should.equal(true);
