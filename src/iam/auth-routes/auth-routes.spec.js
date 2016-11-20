@@ -60,7 +60,7 @@ describe("AuthRoutes", () => {
                 cookie.value.should.equal("a.b.c");
                 return cookie.options.should.eql({
                     secure: true,
-                    domain: "stepinto.io"
+                    domain: "http://www.stepinto.io"
                 });
             });
         });

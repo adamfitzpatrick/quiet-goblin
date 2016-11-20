@@ -13,7 +13,11 @@ describe("CORSFilter", () => {
         response = {
             headers: [],
             header: (type, value) => response.headers.push({ type: type, value: value }),
-            send: (status) => response.status = status
+            sendStatus: (status) => {
+                response.status = status;
+                return response;
+            },
+            end: () => {}
         };
         request = { method: "OPTIONS" };
         CORSFilter()(request, response, () => {});

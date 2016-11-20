@@ -5,6 +5,7 @@ let User = require("../user/user");
 let httpStatusMatcher = require("../../common/http-status-matcher/http-status-matcher");
 let SecureRouter = require("../secure-router/secure-router");
 let permissions = require("../permissions/permissions");
+let domain = require("../../configuration/app-config").domain;
 
 let _this;
 
@@ -20,7 +21,7 @@ class AuthRoutes {
     getToken(request, response) {
         return this.authenticator.verifyUser(request.body.username, request.body.password)
             .then(token => {
-                const cookieOpts = { secure: true, domain: "stepinto.io" };
+                const cookieOpts = { secure: true, domain: domain };
                 return response.cookie("stepinto.io.token", token, cookieOpts).end();
             }, err => {
                 err = err.message || err;

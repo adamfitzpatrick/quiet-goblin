@@ -1,6 +1,7 @@
 {
   "dev": {
     "port": 7002,
+    "domain": "http://127.0.0.1:7002",
     "log_transports": [
       {
         "type": "Console",
@@ -21,6 +22,7 @@
   },
   "e2e": {
     "port": 7003,
+    "domain": "http://www.stepinto.io",
     "log_transports": [
       {
         "type": "Console",
@@ -40,6 +42,7 @@
     "secret": "./token-rsa.key"
   },
   "qa": {
+    "domain": ".stepinto.io",
     "log_transports": [
       { "type": "Console", "params": { "name": "console", "colorize": true }}
     ],
@@ -52,6 +55,7 @@
     "secret": "./token-rsa.key"
   },
   "prod": {
+    "domain": ".stepinto.io",
     "log_transports": [
       { "type": "File", "params": { "filename": "./logs/quiet-goblin.log", "maxsize": 1000000 }}
     ],

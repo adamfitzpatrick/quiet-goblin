@@ -7,9 +7,10 @@ function CORSFilter() {
             "Origin, X-Requested-With, Content-Type, Accept");
 
         if (request.method === "OPTIONS") {
-            response.send(200);
+            response.sendStatus(200).end();
+        } else {
+            next();
         }
-        next();
     };
 }
 
