@@ -6,7 +6,9 @@ let path = require("path");
 let mkdirp = require("mkdirp");
 
 let transports = appConfig.log_transports.map((transport) => {
-    mkdirp(path.resolve(process.cwd(), path.dirname(transport.params.filename)));
+    if (transport.params.filename) {
+        mkdirp(path.resolve(process.cwd(), path.dirname(transport.params.filename)));
+    }
     return new (winston.transports[transport.type])(transport.params);
 });
 

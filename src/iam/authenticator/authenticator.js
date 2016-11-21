@@ -40,8 +40,9 @@ class Authenticator {
 
     issueToken(user) {
         this.LOGGER.info("secure token issued", { username: user.username });
+        delete user.password;
         let token = jwt.sign(user, secret, { expiresIn: 600000 });
-        return token;
+        return { token: token, user: user };
     }
 
     addUser(user) {

@@ -1,7 +1,12 @@
 "use strict";
 
 class User {
-
+    /**
+     * id: string (equal to username)
+     * username: string (equal to id)
+     * permissions: string[]
+     * password: string
+     */
     constructor(user) {
         Object.assign(this, user);
         this.id = user.username;

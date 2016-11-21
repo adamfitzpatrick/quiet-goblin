@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "ci": "./start-ci.sh",
+    "cucumber": "cucumber.js ./e2e/features --require ./e2e/support",
     "e2e": "cucumber.js ./e2e/features --require ./e2e/support --tags ~@ignore",
     "gulp": "gulp",
     "keygen": "openssl genrsa -out token-rsa.key 1024",

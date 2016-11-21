@@ -43,11 +43,11 @@ describe("AuthRoutes", () => {
         });
 
         it("should return a token for a valid user", () => {
-            authenticatorMock.expects("verifyUser").returns(Promise.resolve("a.b.c"));
-            return authRoutes.getToken(request, response).then((data) => {
+            authenticatorMock.expects("verifyUser")
+                .returns(Promise.resolve({ token: "a.b.c", user: "user" }));
+            return authRoutes.getToken(request, response).then(() => {
                 authenticatorMock.verify();
-                data.should.have.property("token", "a.b.c");
-                return response.value.should.eql({ token: "a.b.c" });
+                return response.value.should.eql({ token: "a.b.c", user: "user" });
             });
         });
 
