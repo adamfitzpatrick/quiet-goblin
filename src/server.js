@@ -13,6 +13,19 @@ let PostsRoutes = require("./posts/posts-routes/posts-routes");
 let CommentRoutes = require("./comment/comment-routes/comment-routes");
 let S3Routes = require("./s3/s3-routes/s3-routes");
 
+const path = require("path");
+const rootDir = path.resolve(__dirname, "..");
+const deployOpts = {
+    cwd: path.resolve(__dirname, ".."),
+    env: {
+        "RAGING_GOBLIN_TAG": process.env.RAGING_GOBLIN_TAG,
+        "PUBLIC_DIR": path.resolve("./public"),
+        "ROOT": rootDir
+    },
+    stdio:[0,1,2]
+};
+require("child_process").execFileSync("./ui-deploy.sh", deployOpts);
+
 module.exports = function () {
     require("./configuration/aws-config");
     let LOGGER = require("./configuration/logging/logger")();
