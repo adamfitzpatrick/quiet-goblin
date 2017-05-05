@@ -44,6 +44,11 @@ module.exports = function () {
     new CommentRoutes(app);
     new S3Routes("stepinto-io-static-resources", app);
 
+    app.get("*", (req, res) => {
+        const direct = req.path.substr(1, req.path.length);
+        res.redirect(`/?direct=${direct}`);
+    });
+
     let port = appConfig.port || process.env.PORT;
     app.listen(port);
 

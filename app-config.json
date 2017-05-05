@@ -53,6 +53,7 @@
   },
   "prod": {
     "log_transports": [
+      { "type": "Console", "params": { "name": "console", "colorize": true }},
       { "type": "File", "params": { "filename": "./logs/quiet-goblin.log", "maxsize": 1000000 }}
     ],
     "static_source": "./public",
