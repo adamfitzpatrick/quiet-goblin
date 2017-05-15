@@ -59,6 +59,7 @@
     "istanbul": "^0.4.5",
     "jshint": "^2.9.3",
     "jshint-stylish": "^2.2.1",
+    "memory-cache": "^0.1.6",
     "mocha": "^3.0.2",
     "rewire": "^2.5.2",
     "rimraf": "^2.5.4",

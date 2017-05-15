@@ -55,6 +55,7 @@ describe("application configuration", () => {
             applicationMock.expects("use").withExactArgs("/comment", sinon.match.func);
             applicationMock.expects("use")
                 .withExactArgs("/stepinto-io-static-resources", sinon.match.func);
+            applicationMock.expects("use").withExactArgs("/github", sinon.match.func);
             applicationMock.expects("listen").withExactArgs(port.toString());
             server();
             applicationMock.verify();
