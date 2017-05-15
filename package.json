@@ -34,6 +34,7 @@
     "github": "^6.0.1",
     "helmet": "^3.0.0",
     "jsonwebtoken": "^7.1.9",
+    "memory-cache": "^0.1.6",
     "mkdirp": "^0.5.1",
     "multer": "^1.2.0",
     "request": "^2.75.0",

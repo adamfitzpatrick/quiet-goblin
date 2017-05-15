@@ -12,6 +12,7 @@ let AuthRoutes = require("./iam/auth-routes/auth-routes");
 let PostsRoutes = require("./posts/posts-routes/posts-routes");
 let CommentRoutes = require("./comment/comment-routes/comment-routes");
 let S3Routes = require("./s3/s3-routes/s3-routes");
+const GitHubRoutes = require("./github/github-routes/github-routes");
 
 const path = require("path");
 const rootDir = path.resolve(__dirname, "..");
@@ -43,11 +44,9 @@ module.exports = function () {
     new PostsRoutes(app);
     new CommentRoutes(app);
     new S3Routes("stepinto-io-static-resources", app);
+    new GitHubRoutes(app);
 
-    app.get("*", (req, res) => {
-        const direct = req.path.substr(1, req.path.length);
-        res.redirect(`/?direct=${direct}`);
-    });
+    app.get("*", require("./static/static"));
 
     let port = appConfig.port || process.env.PORT;
     app.listen(port);
