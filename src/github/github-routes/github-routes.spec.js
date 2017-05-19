@@ -45,7 +45,7 @@ describe("GithubRoutes", () => {
                     }
                 }
             };
-            httpsMock.expects("get").returns({ on: (err) => {} });
+            httpsMock.expects("get").returns({ on: () => {} });
             githubRoutes.get({ path: "/request/path" }, response);
             httpsMock.expectations.get[0].args[0][1](responseHandler);
             response.value.data.should.equal("github");
@@ -62,7 +62,9 @@ describe("GithubRoutes", () => {
 
         it("should return the error response if the api call failes", () => {
             memCache.clear();
-            httpsMock.expects("get").returns({ on: (event, callback) => callback({ statusCode: 500 }) });
+            httpsMock.expects("get").returns({
+                on: (event, callback) => callback({ statusCode: 500 })
+            });
             githubRoutes.get({ path: "/request/path" }, response);
             response.statusCode.should.equal(500);
             httpsMock.verify();
