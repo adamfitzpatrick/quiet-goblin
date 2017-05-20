@@ -36,10 +36,12 @@ module.exports = function () {
     let app = express();
     app.use(helmet());
     app.use(bodyParser.json());
-    app.use(express.static(appConfig.static_source));
     app.use(CORSFilter());
+    app.use("*", require("./configuration/http-interceptor/http-interceptor"));
 
-    new AdminRoutes(app);
+    app.use(express.static(appConfig.static_source));
+
+    // new AdminRoutes(app);
     new AuthRoutes(app);
     new PostsRoutes(app);
     new CommentRoutes(app);

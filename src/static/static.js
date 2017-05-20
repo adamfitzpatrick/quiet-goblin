@@ -1,6 +1,10 @@
 "use strict";
 
-module.exports = (req, res) => {
+const LOGGER = require("../configuration/logging/logger")({ source: "static"});
+
+module.exports = (req, res, next) => {
+    LOGGER.info(`Request for ${req.path}`);
     const direct = req.path.substr(1, req.path.length);
-    res.redirect(`/?direct=${direct}`);
+    if (direct) { return res.redirect(`/?direct=${direct}`); }
+    next();
 };
