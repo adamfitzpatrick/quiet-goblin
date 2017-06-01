@@ -1,10 +1,11 @@
 {
   "name": "quiet-goblin",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Backend implementation for raging-goblin",
   "main": "app.js",
   "scripts": {
     "ci": "./start-ci.sh",
+    "cucumber": "cucumber.js ./e2e/features --require ./e2e/support",
     "e2e": "cucumber.js ./e2e/features --require ./e2e/support --tags ~@ignore",
     "gulp": "gulp",
     "keygen": "openssl genrsa -out token-rsa.key 1024",
@@ -33,6 +34,7 @@
     "github": "^6.0.1",
     "helmet": "^3.0.0",
     "jsonwebtoken": "^7.1.9",
+    "memory-cache": "^0.1.6",
     "mkdirp": "^0.5.1",
     "multer": "^1.2.0",
     "request": "^2.75.0",

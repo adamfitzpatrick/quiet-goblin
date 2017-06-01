@@ -49,12 +49,14 @@ describe("application configuration", () => {
             applicationMock.expects("use").withExactArgs("bodyParserJson");
             applicationMock.expects("use").withExactArgs("static");
             applicationMock.expects("use").withExactArgs("CORSFilter");
+            applicationMock.expects("use").withExactArgs("*", sinon.match.func);
             applicationMock.expects("use").withExactArgs("/admin", sinon.match.func);
             applicationMock.expects("use").withExactArgs("/auth", sinon.match.func);
             applicationMock.expects("use").withExactArgs("/posts", sinon.match.func);
             applicationMock.expects("use").withExactArgs("/comment", sinon.match.func);
             applicationMock.expects("use")
                 .withExactArgs("/stepinto-io-static-resources", sinon.match.func);
+            applicationMock.expects("use").withExactArgs("/github", sinon.match.func);
             applicationMock.expects("listen").withExactArgs(port.toString());
             server();
             applicationMock.verify();

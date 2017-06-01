@@ -17,7 +17,8 @@
       "user": "ragingGoblin_qa_user",
       "comment": "ragingGoblin_qa_comment"
     },
-    "secret": "./token-rsa.key"
+    "secret": "./token-rsa.key",
+    "origin": ""
   },
   "e2e": {
     "port": 7003,
@@ -37,11 +38,12 @@
       "user": "ragingGoblin_qa_user",
       "comment": "ragingGoblin_qa_comment"
     },
-    "secret": "./token-rsa.key"
+    "secret": "./token-rsa.key",
+    "origin": ""
   },
   "qa": {
     "log_transports": [
-      { "type": "Console", "params": { "name": "console", "colorize": true }}
+      { "type": "Console", "params": { "name": "console", "colorize": false, "timestamp": true }}
     ],
     "static_source": "./public",
     "dynamo_tables": {
@@ -49,10 +51,12 @@
       "user": "ragingGoblin_qa_user",
       "comment": "ragingGoblin_qa_comment"
     },
-    "secret": "./token-rsa.key"
+    "secret": "./token-rsa.key",
+    "origin": "www.qa.stepinto.io"
   },
   "prod": {
     "log_transports": [
+      { "type": "Console", "params": { "name": "console", "colorize": false, "timestamp": true }},
       { "type": "File", "params": { "filename": "./logs/quiet-goblin.log", "maxsize": 1000000 }}
     ],
     "static_source": "./public",
@@ -61,6 +65,7 @@
       "user": "ragingGoblin_user",
       "comment": "ragingGoblin_comment"
     },
-    "secret": "./token-rsa.key"
+    "secret": "./token-rsa.key",
+    "origin": "www.stepinto.io"
   }
 }

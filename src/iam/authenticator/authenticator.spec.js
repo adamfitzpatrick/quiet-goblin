@@ -154,8 +154,10 @@ describe("Authenticator", () => {
                 .returns(true);
             jwtMock.expects("sign").withExactArgs(testUser, secret, { expiresIn: 600000 })
                 .returns("a.b.c");
-            return authenticator.verifyUser("username", "password").then((token) => {
-                token.should.equal("a.b.c");
+            return authenticator.verifyUser("username", "password").then((data) => {
+                data.should.have.property("token", "a.b.c");
+                data.should.have.property("user");
+                data.user.should.not.have.property("password");
                 userRepoMock.verify();
                 bcryptMock.verify();
                 return jwtMock.verify();

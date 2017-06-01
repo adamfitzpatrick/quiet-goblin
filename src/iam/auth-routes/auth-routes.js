@@ -19,8 +19,8 @@ class AuthRoutes {
 
     getToken(request, response) {
         return this.authenticator.verifyUser(request.body.username, request.body.password)
-            .then(token => {
-                return response.json({ token: token });
+            .then(authorization => {
+                return response.json({ token: authorization.token, user: authorization.user });
             }, err => {
                 err = err.message || err;
                 return response.status(httpStatusMatcher(err)).json(err);

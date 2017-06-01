@@ -24,10 +24,12 @@ let adminDriver = {
     createAccountWithoutApp: iamDriver.createAccountWithoutApp,
     login: iamDriver.login,
     changePassword: (username, password) => {
-        return request.post("/change-password").send({
-            username: username,
-            password: password
-        });
+        return request.post("/change-password")
+            .send({
+                username: username,
+                password: password
+            })
+            .set("Authorization", `Bearer ${ supportData.token }`);
     },
     cleanDynamoDbUserTable: iamDriver.cleanDynamoDbUserTable,  // Will be deprecated
     cleanUserTable: () => {
